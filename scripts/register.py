@@ -16,8 +16,8 @@ def register(username, password, app):
         
         app.logger.debug("Creating user")
         create_user_sql = '''
-            INSERT INTO users (UserName, Password, EmailVerified, Score)
-            VALUES (%s, %s, FALSE, 0);
+            INSERT INTO users (UserName, Password, EmailVerified)
+            VALUES (%s, %s, FALSE);
         '''
         cursor.execute(create_user_sql, (username, password,))
         connection.commit()

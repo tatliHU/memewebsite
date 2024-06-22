@@ -30,13 +30,12 @@ def upload(image, title, tags, username, app):
         
         app.logger.debug("Uploading metadata to DB")
         create_user_sql = '''
-            INSERT INTO posts (Title, Url, Score, Published, UserName)
-            VALUES (%s, %s, %s, %s, %s);
+            INSERT INTO posts (Title, Url, Published, UserName)
+            VALUES (%s, %s, %s, %s);
         '''
         values = (
             title,
             f"https://bmeme-images.s3.eu-north-1.amazonaws.com/{id}",
-            0,
             int(round(time.time())),
             username,
         )
