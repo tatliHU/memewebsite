@@ -1,5 +1,6 @@
 import base64
 import psycopg2
+import flask
 from .globals import get_connection
 
 def login(authorization, app):
@@ -18,6 +19,7 @@ def login(authorization, app):
         
         app.logger.debug("Authorizing")
         if get_password(username, app)==password:
+            flask.session['username'] = username
             return 'Welcome '+username, 200
         else:
             return 'Unauthorized', 401

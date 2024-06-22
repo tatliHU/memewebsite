@@ -1,12 +1,14 @@
-from flask import Flask, request, url_for
+from flask import Flask, request, session, url_for
 from scripts.index import index
 from scripts.register import register
 from scripts.login import login
 from scripts.search import fresh, top, posts_by_user
 from scripts.upload import upload
 from scripts.vote import upvote, downvote
+import os
 
 app = Flask(__name__)
+app.secret_key = os.environ['SESSION_KEY']
 
 @app.route("/", methods=['GET'])
 def index_endpoint():
@@ -15,6 +17,11 @@ def index_endpoint():
 @app.route("/login", methods=['POST'])
 def login_endpoint():
     return login(request.headers.get('Authorization'), app=app)
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return 'Logged out', 200
 
 @app.route("/register", methods=['POST'])
 def register_endpoint():
@@ -34,12 +41,21 @@ def users_endpoint(page):
 
 @app.route("/upload", methods=['POST'])
 def upload_endpoint():
-    return upload(request.files['image'], request.form['title'], request.form['tags'], request.form['username'], app=app)
+    if 'username' in session:
+        return upload(request.files['image'], request.form['title'], request.form['tags'], session['username'], app=app)
+    else:
+        return 'Login required', 401
 
 @app.route("/upvote/<postID>", methods=['POST'])
 def upvote_endpoint(postID):
-    return upvote(postID, request.json['username'], app=app)
+    if 'username' in session:
+        return upvote(postID, request.json['username'], app=app)
+    else:
+        return 'Login required', 401
 
 @app.route("/downvote/<postID>", methods=['POST'])
 def downvote_endpoint(postID):
-    return downvote(postID, request.json['username'], app=app)
+    if 'username' in session:
+        return downvote(postID, request.json['username'], app=app)
+    else:
+        return 'Login required', 401
