@@ -31,12 +31,13 @@
         async function register() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+            const email = document.getElementById('email').value;
             const response = await fetch('http://localhost:5000/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ username: username, password: password })
+                body: JSON.stringify({ username: username, password: password, email:email })
             });
 
             if (response.ok) {
@@ -99,6 +100,49 @@
                 alert('An error occurred');
             }
         }
+        async function get_top() {
+            try {
+                const response = await fetch('http://localhost:5000/top/1', {
+                    method: 'GET'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                alert('Response: ' + JSON.stringify(data, null, 2));
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred');
+            }
+        }
+        async function upvote() {
+            try {
+                const postID = document.getElementById('postID').value;
+                const response = await fetch('http://localhost:5000/upvote/'+postID, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                alert('Response: ' + JSON.stringify(data, null, 2));
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred');
+            }
+        }
+        async function downvote() {
+            try {
+                const postID = document.getElementById('postID').value;
+                const response = await fetch('http://localhost:5000/downvote/'+postID, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                alert('Response: ' + JSON.stringify(data, null, 2));
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred');
+            }
+        }
     </script>
 </head>
 <body>
@@ -109,6 +153,9 @@
 
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required><br><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email"><br><br>
 
         <button type="submit" onclick="event.preventDefault(); login();">Login</button>
         <button type="submit" onclick="event.preventDefault(); register()">Register</button>
@@ -126,6 +173,13 @@
         </select>
         <button type="submit" onclick="event.preventDefault(); upload()">Upload</button>
     </form>
-    <button type="submit" onclick="event.preventDefault(); get_posts()">Get posts</button>
+    <button type="submit" onclick="event.preventDefault(); get_posts()">Get fresh</button>
+    <button type="submit" onclick="event.preventDefault(); get_top()">Get top</button>
+    <h1>Vote meme</h1>
+    <form id="vote-form">
+        <input type="text" id="postID" placeholder="Enter PostID" required>
+        <button type="submit" onclick="event.preventDefault(); upvote()">Upvote</button>
+        <button type="submit" onclick="event.preventDefault(); downvote()">Downvote</button>
+    </form>
 </body>
 </html>

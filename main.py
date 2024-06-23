@@ -1,6 +1,6 @@
 from flask import Flask, request, session, url_for
 from scripts.index import index
-from scripts.register import register
+from scripts.register import register, verify
 from scripts.login import login
 from scripts.search import fresh, top, posts_by_user
 from scripts.upload import upload
@@ -25,7 +25,11 @@ def logout():
 
 @app.route("/register", methods=['POST'])
 def register_endpoint():
-    return register(request.json['username'], request.json['password'], app=app)
+    return register(request.json['username'], request.json['password'], request.json['email'], app=app)
+
+@app.route("/verify/<uuid>", methods=['GET'])
+def verify_endpoint(uuid):
+    return verify(uuid, app)
 
 @app.route("/<page>", methods=['GET'])
 def fresh_endpoint(page):
@@ -49,13 +53,13 @@ def upload_endpoint():
 @app.route("/upvote/<postID>", methods=['POST'])
 def upvote_endpoint(postID):
     if 'username' in session:
-        return upvote(postID, request.json['username'], app=app)
+        return upvote(postID, session['username'], app=app)
     else:
         return 'Login required', 401
 
 @app.route("/downvote/<postID>", methods=['POST'])
 def downvote_endpoint(postID):
     if 'username' in session:
-        return downvote(postID, request.json['username'], app=app)
+        return downvote(postID, session['username'], app=app)
     else:
         return 'Login required', 401

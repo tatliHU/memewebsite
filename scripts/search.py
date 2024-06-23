@@ -12,11 +12,22 @@ def top(page, app):
     return search(sql, (page,), app)
 
 def fresh(page, app):
-    sql = "SELECT * FROM posts ORDER BY Published LIMIT 10 OFFSET (%s - 1) * 10;"
+    sql = """SELECT p, SUM(v.vote) AS Score
+            FROM posts p
+            JOIN votes v ON p.PostID = v.PostID
+            GROUP BY p.PostID
+            ORDER BY Published
+            LIMIT 10 OFFSET (%s - 1) * 10;"""
     return search(sql, (page,), app)
 
 def posts_by_user(user, page, app):
-    sql = "SELECT * FROM posts ORDER BY Published LIMIT 10 OFFSET (%s - 1) * 10 WHERE UserName=%s;"
+    sql = """SELECT p, SUM(v.vote) AS Score
+            FROM posts p
+            JOIN votes v ON p.PostID = v.PostID
+            GROUP BY p.PostID
+            ORDER BY Published
+            LIMIT 10 OFFSET (%s - 1) * 10
+            WHERE UserName=%s;"""
     return search(sql, (page, user,), app)
 
 def search(sql, values, app):

@@ -12,16 +12,6 @@ def upload(image, title, tags, username, app):
     app.logger.debug(f"Generated Id: {id}")
     file_format = secure_filename(image.filename).split(".")[-1]
     
-    # S3 upload
-    try:
-        s3_client = boto3.client('s3')
-        s3_client.upload_fileobj(image, 'bmeme-images', f"{id}.{file_format}",
-                                 ExtraArgs={'ContentType': image.content_type, 'ACL': 'public-read'})
-    except Exception as e:
-        app.logger.debug(f"S3 upload failed for {id}")
-        app.logger.debug(e)
-        return 'File upload failed', 500
-    
     # DB upload
     try:
         connection = get_connection()
@@ -41,7 +31,6 @@ def upload(image, title, tags, username, app):
         )
         cursor.execute(create_user_sql, values)
         connection.commit()
-        return 'Created', 201
     except Exception as e:
         app.logger.debug(f"DB upload failed for {id}")
         app.logger.debug(e)
@@ -51,3 +40,15 @@ def upload(image, title, tags, username, app):
             cursor.close()
             connection.close()
             app.logger.debug("DB connection closed")
+    
+    # S3 upload
+    try:
+        app.logger.debug("Uploading file to S3")
+        s3_client = boto3.client('s3')
+        s3_client.upload_fileobj(image, 'bmeme-images', f"{id}.{file_format}",
+                                 ExtraArgs={'ContentType': image.content_type, 'ACL': 'public-read'})
+        return 'Created', 201
+    except Exception as e:
+        app.logger.debug(f"S3 upload failed for {id}")
+        app.logger.debug(e)
+        return 'File upload failed', 500

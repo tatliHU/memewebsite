@@ -13,12 +13,12 @@ write_files:
     append: true
   - path: /tmp/db_init.sql
     content: | 
+      CREATE DATABASE MEME WITH OWNER myuser;
       CREATE TABLE USERS (
           UserName VARCHAR(25) NOT NULL,
           Password VARCHAR(32) NOT NULL,
           Email VARCHAR(50) NOT NULL,
-          EmailVerified BOOLEAN NOT NULL,
-        Admin BOOLEAN,
+          Admin BOOLEAN,
           PRIMARY KEY (UserName)
       );
 
@@ -42,11 +42,13 @@ write_files:
         FOREIGN KEY (UserName) REFERENCES users(UserName)
       );
 
-      CREATE TABLE EMAILS (
-          EmailUUID VARCHAR(36) NOT NULL,
+      CREATE TABLE PENDING_REGISTRATIONS (
+          Email VARCHAR(40) NOT NULL,
+          UUID VARCHAR(36) NOT NULL,
         UserName VARCHAR(25) NOT NULL,
-        FOREIGN KEY (UserName) REFERENCES users(UserName),
-          PRIMARY KEY (EmailUUID)
+          Password VARCHAR(32) NOT NULL,
+          Created INT NOT NULL,
+          PRIMARY KEY (Email)
       );
 
 runcmd:

@@ -11,6 +11,7 @@ def vote(postID, username, score, app):
         connection = get_connection()
         cursor = connection.cursor()
         app.logger.debug("DB connection opened")
+        app.logger.debug(f"Score is {score}")
         
         get_vote_sql = "SELECT Vote FROM VOTES WHERE UserName=%s AND PostID=%s"
         cursor.execute(get_vote_sql, (username, postID,))
@@ -28,6 +29,7 @@ def vote(postID, username, score, app):
             app.logger.debug("Updating existing vote")
             sql = "UPDATE VOTES SET Vote = %s WHERE UserName=%s AND PostID=%s;"
             values = (score, username, postID,)
+        app.logger.debug(values)
         cursor.execute(sql, values)
         connection.commit()
         return 'Created', 201
