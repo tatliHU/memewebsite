@@ -1,9 +1,32 @@
 # memewebsite
-On-premise meme website.
-### Backend:
+Multi-cloud meme website.
+
+## You will need
+- AWS account with an S3 bucket
+- Your own domain
+
+### Planned features
+- Email verification
+- Domain
+- Automatic certificate creation and renewal with Let's encrypt
+
+## Backend stack:
 - Flask
-- Postgresql
+- Postgresql-16
 - AWS S3
+- Hetzner Cloud Server
+I use Hetzner hosting because it is extremly cheap. You should be able to use the same cloud-init file with other cloud providers.
+
+## Remote setup with Terraform
+- Create a Hetzner account and a project with a read-write API key
+- Replace token in terraform/terraform.tfvars
+- Open a shell in the terraform folder and execute
+```
+terraform init
+terraform apply
+```
+
+## Local setup
 
 ### Setup database
 ```
@@ -11,7 +34,7 @@ CREATE DATABASE MEME WITH OWNER myuser;
 CREATE TABLE USERS (
     UserName VARCHAR(25) NOT NULL,
     Password VARCHAR(32) NOT NULL,
-    Email VARCHAR(50),
+    Email VARCHAR(50) NOT NULL,
     EmailVerified BOOLEAN NOT NULL,
 	Admin BOOLEAN,
     PRIMARY KEY (UserName)
@@ -35,5 +58,12 @@ CREATE TABLE VOTES (
 	Vote SMALLINT NOT NULL CHECK (Vote IN (-1, 1)),
 	FOREIGN KEY (PostID) REFERENCES posts(PostID),
 	FOREIGN KEY (UserName) REFERENCES users(UserName)
+);
+
+CREATE TABLE EMAILS (
+    EmailUUID VARCHAR(36) NOT NULL,
+	UserName VARCHAR(25) NOT NULL,
+	FOREIGN KEY (UserName) REFERENCES users(UserName),
+    PRIMARY KEY (EmailUUID)
 );
 ```
