@@ -1,4 +1,6 @@
 from flask import Flask, request, session, url_for
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from scripts.index import index
 from scripts.register import register, verify
 from scripts.login import login
@@ -9,12 +11,15 @@ import os
 
 app = Flask(__name__)
 app.secret_key = os.environ['SESSION_KEY']
+limiter = Limiter(get_remote_address, app=app, strategy="moving-window",
+                  default_limits=["100 per minute", "5 per second"])
 
 @app.route("/", methods=['GET'])
 def index_endpoint():
     return index()
 
 @app.route("/login", methods=['POST'])
+@limiter.limit("10 per minute")
 def login_endpoint():
     return login(request.headers.get('Authorization'), app=app)
 
@@ -24,6 +29,7 @@ def logout():
     return 'Logged out', 200
 
 @app.route("/register", methods=['POST'])
+@limiter.limit("3 per minute")
 def register_endpoint():
     return register(request.json['username'], request.json['password'], request.json['email'], app=app)
 
@@ -44,6 +50,7 @@ def users_endpoint(page):
     return posts_by_user(request.args.get('name', ''), page, app=app)
 
 @app.route("/upload", methods=['POST'])
+@limiter.limit("3 per minute")
 def upload_endpoint():
     if 'username' in session:
         return upload(request.files['image'], request.form['title'], request.form['tags'], session['username'], app=app)
