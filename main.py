@@ -4,6 +4,7 @@ from flask_limiter.util import get_remote_address
 from scripts.index import index
 from scripts.register import register, verify
 from scripts.login import login
+from scripts.change_password import change_password
 from scripts.search import fresh, top, posts_by_user
 from scripts.upload import upload
 from scripts.vote import upvote, downvote
@@ -32,6 +33,15 @@ def logout():
 @limiter.limit("3 per minute")
 def register_endpoint():
     return register(request.json['username'], request.json['password'], request.json['email'], app=app)
+
+@app.route("/change_password", methods=['POST'])
+@limiter.limit("3 per minute")
+def change_password_endpoint():
+    if 'username' in session:
+        app.logger.debug(request.json)
+        return change_password(session['username'], request.json['password'], app=app)
+    else:
+        return 'Login required', 401
 
 @app.route("/verify/<uuid>", methods=['GET'])
 def verify_endpoint(uuid):

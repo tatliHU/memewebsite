@@ -143,6 +143,25 @@
                 alert('An error occurred');
             }
         }
+        async function change_password() {
+            try {
+                const pwd = document.getElementById('new-password').value;
+                const formData = new FormData();
+                formData.append('password', password);
+                const response = await fetch('http://localhost:5000/change_password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password: pwd })
+                });
+                const data = await response.json();
+                alert('Response: ' + JSON.stringify(data, null, 2));
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred');
+            }
+        }
     </script>
 </head>
 <body>
@@ -180,6 +199,11 @@
         <input type="text" id="postID" placeholder="Enter PostID" required>
         <button type="submit" onclick="event.preventDefault(); upvote()">Upvote</button>
         <button type="submit" onclick="event.preventDefault(); downvote()">Downvote</button>
+    </form>
+    <h1>New password</h1>
+    <form id="password-form">
+        <input type="password" id="new-password" placeholder="New password" required>
+        <button type="submit" onclick="event.preventDefault(); change_password()">Change Password</button>
     </form>
 </body>
 </html>
