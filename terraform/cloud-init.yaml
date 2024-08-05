@@ -11,9 +11,21 @@ write_files:
     content: |
       SESSION_KEY=${session_encoder_key}
     append: true
+  - path: /etc/systemd/system/meme.service
+    content: |
+      [Unit]
+      Description=Meme service
+      [Service]
+      Type=oneshot
+      WorkingDirectory=/root/memewebsite
+      ExecStart=gunicorn -w 4 'main:app' -b 0.0.0.0:80
+      User=root
+      Environment="SESSION_KEY=${session_encoder_key}"
   - path: /tmp/db_init.sql
     content: | 
-      CREATE DATABASE MEME WITH OWNER myuser;
+      CREATE USER ${username} WITH PASSWORD '${password}';
+      CREATE DATABASE meme WITH OWNER ${username};
+      \c meme;
       CREATE TABLE USERS (
           UserName VARCHAR(25) NOT NULL,
           Password VARCHAR(32) NOT NULL,
@@ -54,13 +66,16 @@ write_files:
 runcmd:
   - apt-get update
   - DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends postgresql-16
-  - sudo -u postgres psql -c "CREATE USER ${username} WITH PASSWORD '${password}';"
-  - sudo -u postgres psql -c "CREATE DATABASE MEME WITH OWNER ${username};"
+  #- sudo -u postgres psql -c "CREATE USER ${username} WITH PASSWORD '${password}';"
+  #- sudo -u postgres psql -c "CREATE DATABASE meme WITH OWNER ${username};"
   - sudo -u postgres psql -f /tmp/db_init.sql
 
   - apt-get -y install pip python3-flask python3-flask-limiter python3-psycopg2 python3-boto3 python3-gunicorn gunicorn
-  - git clone https://github.com/tatliHU/memewebsite.git
-  - export SESSION_KEY=${session_encoder_key} && cd memewebsite && gunicorn -w 4 'main:app' -b 0.0.0.0:80
+  - cd /root && git clone https://github.com/tatliHU/memewebsite.git
+#  - export SESSION_KEY=${session_encoder_key} && cd memewebsite && gunicorn -w 4 'main:app' -b 0.0.0.0:80
+  - systemctl daemon-reload
+  - systemctl enable meme
+  - systemctl start meme
 
 package_update: true
 package_upgrade: true

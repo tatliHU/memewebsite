@@ -6,7 +6,7 @@ Multi-cloud meme website.
 - Your own domain
 
 ### Planned features
-- Email verification
+- Email verification (partially done)
 - Domain
 - Automatic certificate creation and renewal with Let's encrypt
 

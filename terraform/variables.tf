@@ -4,7 +4,6 @@ variable "hcloud_token" {
 
 variable "ssh_public_key" {
     type        = string
-    default     = "QXEs3ZChrduSxkHT48WweK"
     description = "Your SSH public key"
 }
 
@@ -25,10 +24,16 @@ variable "instance_type" {
     description = "Hetzner VM size"
 }
 
-variable "primary_ip_id" {
-    type        = number
-    default     = 0
-    description = "You can set up a primary IP if you want your webserver to keep the IP even after destroying it. The IP is charged regardless but you don't have update your DNS record"
+variable "primary_ip" {
+    type        = object({
+      meme = bool
+      wiki = bool
+    })
+    default = {
+      meme = false
+      wiki = false
+    }
+    description = "You can set up primary IPs if you want to keep the IPs even after destroying the env. The IP is charged regardless but you don't have update your DNS record"
 }
 
 variable "postgres" {
