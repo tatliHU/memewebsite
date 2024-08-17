@@ -1,7 +1,6 @@
-from flask import Flask, request, session, url_for
+from flask import Flask, request, send_from_directory, session
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from scripts.index import index
 from scripts.register import register, verify
 from scripts.login import login
 from scripts.change_password import change_password
@@ -17,24 +16,32 @@ limiter = Limiter(get_remote_address, app=app, strategy="moving-window",
 
 @app.route("/", methods=['GET'])
 def index_endpoint():
-    return index()
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'index.html')
 
-@app.route("/login", methods=['POST'])
+@app.route("/debug", methods=['GET'])
+def debug_endpoint():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'debug.html')
+
+@app.route("/favicon.ico", methods=['GET'])
+def favicon_endpoint():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+@app.route("/api/login", methods=['POST'])
 @limiter.limit("10 per minute")
 def login_endpoint():
     return login(request.headers.get('Authorization'), app=app)
 
-@app.route('/logout')
+@app.route('/api/logout')
 def logout():
     session.pop('username', None)
     return 'Logged out', 200
 
-@app.route("/register", methods=['POST'])
+@app.route("/api/register", methods=['POST'])
 @limiter.limit("3 per minute")
 def register_endpoint():
     return register(request.json['username'], request.json['password'], request.json['email'], app=app)
 
-@app.route("/change_password", methods=['POST'])
+@app.route("/api/change_password", methods=['POST'])
 @limiter.limit("3 per minute")
 def change_password_endpoint():
     if 'username' in session:
@@ -43,23 +50,23 @@ def change_password_endpoint():
     else:
         return 'Login required', 401
 
-@app.route("/verify/<uuid>", methods=['GET'])
+@app.route("/api/verify/<uuid>", methods=['GET'])
 def verify_endpoint(uuid):
     return verify(uuid, app)
 
-@app.route("/<page>", methods=['GET'])
+@app.route("/api/fresh/<page>", methods=['GET'])
 def fresh_endpoint(page):
     return fresh(page, app=app)
 
-@app.route("/top/<page>", methods=['GET'])
+@app.route("/api/top/<page>", methods=['GET'])
 def top_endpoint(page):
     return top(page, app=app)
 
-@app.route("/users/<page>", methods=['GET'])
+@app.route("/api/users/<page>", methods=['GET'])
 def users_endpoint(page):
     return posts_by_user(request.args.get('name', ''), page, app=app)
 
-@app.route("/upload", methods=['POST'])
+@app.route("/api/upload", methods=['POST'])
 @limiter.limit("3 per minute")
 def upload_endpoint():
     if 'username' in session:
@@ -67,16 +74,15 @@ def upload_endpoint():
     else:
         return 'Login required', 401
 
-@app.route("/upvote/<postID>", methods=['POST'])
-def upvote_endpoint(postID):
+@app.route("/api/vote", methods=['POST'])
+def vote_endpoint():
+    #session['username'] = 'atka' left here for testing until UI login implemented
     if 'username' in session:
-        return upvote(postID, session['username'], app=app)
-    else:
-        return 'Login required', 401
-
-@app.route("/downvote/<postID>", methods=['POST'])
-def downvote_endpoint(postID):
-    if 'username' in session:
-        return downvote(postID, session['username'], app=app)
+        if int(request.json['delta']) == 1:
+            return upvote(request.json['postID'], session['username'], app=app)
+        elif int(request.json['delta']) == -1:
+            return downvote(request.json['postID'], session['username'], app=app)
+        else:
+            return 'Invalid vote', 400
     else:
         return 'Login required', 401

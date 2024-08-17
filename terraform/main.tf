@@ -9,6 +9,7 @@ data "template_file" "cloud_init" {
     username            = var.postgres.username
     password            = var.postgres.password
     session_encoder_key = var.session_encoder_key
+    domain              = var.domain
   }
 }
 

@@ -10,7 +10,7 @@
             const password = document.getElementById('password').value;
 
             const authString = btoa(username + ':' + password);
-            const response = await fetch('http://localhost:5000/login', {
+            const response = await fetch('http://localhost:5000/api/login', {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Basic ' + authString,
@@ -32,7 +32,7 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const email = document.getElementById('email').value;
-            const response = await fetch('http://localhost:5000/register', {
+            const response = await fetch('http://localhost:5000/api/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -67,7 +67,7 @@
             formData.append('username', document.getElementById('username').value);
 
             try {
-                const response = await fetch('http://localhost:5000/upload', {
+                const response = await fetch('http://localhost:5000/api/upload', {
                     method: 'POST',
                     body: formData
                 });
@@ -85,7 +85,7 @@
         }
         async function get_posts() {
             try {
-                const response = await fetch('http://localhost:5000/1', {
+                const response = await fetch('http://localhost:5000/api/1', {
                     method: 'GET'
                 });
 
@@ -102,7 +102,7 @@
         }
         async function get_top() {
             try {
-                const response = await fetch('http://localhost:5000/top/1', {
+                const response = await fetch('http://localhost:5000/api/top/1', {
                     method: 'GET'
                 });
 
@@ -120,7 +120,7 @@
         async function upvote() {
             try {
                 const postID = document.getElementById('postID').value;
-                const response = await fetch('http://localhost:5000/upvote/'+postID, {
+                const response = await fetch('http://localhost:5000/api/upvote/'+postID, {
                     method: 'POST'
                 });
                 const data = await response.json();
@@ -133,7 +133,7 @@
         async function downvote() {
             try {
                 const postID = document.getElementById('postID').value;
-                const response = await fetch('http://localhost:5000/downvote/'+postID, {
+                const response = await fetch('http://localhost:5000/api/downvote/'+postID, {
                     method: 'POST'
                 });
                 const data = await response.json();
@@ -148,7 +148,7 @@
                 const pwd = document.getElementById('new-password').value;
                 const formData = new FormData();
                 formData.append('password', password);
-                const response = await fetch('http://localhost:5000/change_password', {
+                const response = await fetch('http://localhost:5000/api/change_password', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

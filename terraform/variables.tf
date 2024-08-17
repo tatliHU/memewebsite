@@ -36,6 +36,11 @@ variable "primary_ip" {
     description = "You can set up primary IPs if you want to keep the IPs even after destroying the env. The IP is charged regardless but you don't have update your DNS record"
 }
 
+variable "domain" {
+    type = string
+    default = "http://bme.lol"
+}
+
 variable "postgres" {
     type = object({
         username = string

@@ -72,7 +72,7 @@ runcmd:
 
   - apt-get -y install pip python3-flask python3-flask-limiter python3-psycopg2 python3-boto3 python3-gunicorn gunicorn
   - cd /root && git clone https://github.com/tatliHU/memewebsite.git
-#  - export SESSION_KEY=${session_encoder_key} && cd memewebsite && gunicorn -w 4 'main:app' -b 0.0.0.0:80
+  - find static -type f -exec sed -i 's/localhost:5000/bme.lol/g' {} +
   - systemctl daemon-reload
   - systemctl enable meme
   - systemctl start meme

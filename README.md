@@ -28,9 +28,17 @@ terraform apply
 
 ## Local setup
 
-### Setup database
+### Set environment variable
+SESSION_KEY=QXEs3ZChrduSxkHT48WweK
+
+### Start webserver
+flask --app main run --debug
+
+### Setup a postgres database and execute SQL
 ```
-CREATE DATABASE MEME WITH OWNER myuser;
+CREATE USER atka WITH PASSWORD 'atka';
+CREATE DATABASE meme WITH OWNER atka;
+\c meme;
 CREATE TABLE USERS (
     UserName VARCHAR(25) NOT NULL,
     Password VARCHAR(32) NOT NULL,

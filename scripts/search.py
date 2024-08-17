@@ -3,7 +3,7 @@ from psycopg2.extensions import quote_ident
 from .globals import get_connection
 
 def top(page, app):
-    sql = """SELECT p, SUM(v.vote) AS Score
+    sql = """SELECT p.PostID, p.Title, p.Url, p.Published, p.Username, p.Approver, SUM(v.vote) AS Score
             FROM posts p
             JOIN votes v ON p.PostID = v.PostID
             GROUP BY p.PostID
@@ -12,16 +12,16 @@ def top(page, app):
     return search(sql, (page,), app)
 
 def fresh(page, app):
-    sql = """SELECT p, SUM(v.vote) AS Score
+    sql = """SELECT p.PostID, p.Title, p.Url, p.Published, p.Username, p.Approver, SUM(v.vote) AS Score
             FROM posts p
             JOIN votes v ON p.PostID = v.PostID
             GROUP BY p.PostID
             ORDER BY Published
             LIMIT 10 OFFSET (%s - 1) * 10;"""
-    return search(sql, (page,), app)
+    return to_json(search(sql, (page,), app))
 
 def posts_by_user(user, page, app):
-    sql = """SELECT p, SUM(v.vote) AS Score
+    sql = """SELECT p.PostID, p.Title, p.Url, p.Published, p.Username, p.Approver, SUM(v.vote) AS Score
             FROM posts p
             JOIN votes v ON p.PostID = v.PostID
             GROUP BY p.PostID
@@ -49,3 +49,17 @@ def search(sql, values, app):
             connection.close()
             app.logger.debug("DB connection closed")
     return 'Internal server error', 500
+
+def to_json(list):
+    out = []
+    for i in list[0]:
+        obj = {}
+        obj['postid']    = i[0]
+        obj['title']     = i[1]
+        obj['url']       = i[2]
+        obj['published'] = i[3]
+        obj['username']  = i[4]
+        obj['approver']  = i[5]
+        obj['score']     = i[6]
+        out.append(obj)
+    return out
