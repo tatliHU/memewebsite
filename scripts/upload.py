@@ -25,10 +25,11 @@ def upload(image, title, tags, username, app):
         '''
         values = (
             title,
-            f"https://bmeme-images.s3.eu-north-1.amazonaws.com/{id}",
+            f"https://bmeme-images.s3.eu-north-1.amazonaws.com/{id}.{file_format}",
             int(round(time.time())),
             username,
         )
+        app.logger.debug(values)
         cursor.execute(create_user_sql, values)
         connection.commit()
     except Exception as e:

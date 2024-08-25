@@ -20,7 +20,7 @@ def login(authorization, app):
         app.logger.debug("Authorizing")
         if get_password(username, app)==password:
             flask.session['username'] = username
-            return 'Welcome '+username, 200
+            return {'message': 'Welcome '+username}, 200
         else:
             return 'Unauthorized', 401
     except LookupError:
