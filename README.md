@@ -16,6 +16,30 @@ Multi-cloud meme website.
 - AWS S3
 - Hetzner Cloud Server
 I use Hetzner hosting because it is extremly cheap. You should be able to use the same cloud-init file with other cloud providers.
+- Amazon SES
+For sending registration verification emails.
+
+### Configurable options
+These are all configured as env vars:
+- SESSION_KEY
+Security feature for encoding cookies
+- AWS_REGION
+AWS region of your S3 bucket
+- S3_BUCKET
+AWS S3 bucket name for storing the images
+- SENDER_EMAIL
+Sender email mail configured in your Amazon SES for registration verification emails
+- POSTGRES_HOST
+Your database server URL
+- POSTGRES_PORT
+Your database server port
+- POSTGRES_DB
+Database to use
+- POSTGRES_USER
+User to connect to the database server
+- POSTGRES_PASS
+Password to connect to your database server
+- AWS access related env vars
 
 ## Remote setup with Terraform
 - Create a Hetzner account and a project with a read-write API key
@@ -28,8 +52,8 @@ terraform apply
 
 ## Local setup
 
-### Set environment variable
-SESSION_KEY=QXEs3ZChrduSxkHT48WweK
+### Configure environment variables
+You can use the presets for testing.
 
 ### Start webserver
 flask --app main run --debug
@@ -39,40 +63,40 @@ flask --app main run --debug
 CREATE USER atka WITH PASSWORD 'atka';
 CREATE DATABASE meme WITH OWNER atka;
 \c meme;
-CREATE TABLE USERS (
-    UserName VARCHAR(25) NOT NULL,
-    Password VARCHAR(32) NOT NULL,
-    Email VARCHAR(50) NOT NULL,
-    Admin BOOLEAN,
-    PRIMARY KEY (UserName)
+CREATE TABLE users (
+    username VARCHAR(25) NOT NULL,
+    password VARCHAR(32) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    admin BOOLEAN,
+    PRIMARY KEY (username)
 );
 
-CREATE TABLE POSTS (
-    PostID SERIAL,
-    Title VARCHAR(50) NOT NULL,
-    Url VARCHAR(255) NOT NULL,
-    Published INT NOT NULL,
-    UserName VARCHAR(25) NOT NULL,
-    Approver VARCHAR(25),
-    FOREIGN KEY (UserName) REFERENCES users(UserName),
-    FOREIGN KEY (Approver) REFERENCES users(UserName),
-	PRIMARY KEY (PostID)
+CREATE TABLE posts (
+    post_id SERIAL,
+    title VARCHAR(50) NOT NULL,
+    url VARCHAR(255) NOT NULL,
+    published INT NOT NULL,
+    username VARCHAR(25) NOT NULL,
+    approver VARCHAR(25),
+    FOREIGN KEY (username) REFERENCES users(username),
+    FOREIGN KEY (approver) REFERENCES users(username),
+	PRIMARY KEY (post_id)
 );
 
-CREATE TABLE VOTES (
-	PostID INT NOT NULL,
-	UserName VARCHAR(25) NOT NULL,
-	Vote SMALLINT NOT NULL CHECK (Vote IN (-1, 1)),
-	FOREIGN KEY (PostID) REFERENCES posts(PostID),
-	FOREIGN KEY (UserName) REFERENCES users(UserName)
+CREATE TABLE votes (
+	post_id INT NOT NULL,
+	username VARCHAR(25) NOT NULL,
+	vote SMALLINT NOT NULL CHECK (vote IN (-1, 1)),
+	FOREIGN KEY (post_id) REFERENCES posts(post_id),
+	FOREIGN KEY (username) REFERENCES users(username)
 );
 
-CREATE TABLE PENDING_REGISTRATIONS (
-    Email VARCHAR(40) NOT NULL,
-    UUID VARCHAR(36) NOT NULL,
-	UserName VARCHAR(25) NOT NULL,
-    Password VARCHAR(32) NOT NULL,
+CREATE TABLE pending_registrations (
+    email VARCHAR(40) NOT NULL,
+    uuid VARCHAR(36) NOT NULL,
+	username VARCHAR(25) NOT NULL,
+    password VARCHAR(32) NOT NULL,
     Created INT NOT NULL,
-    PRIMARY KEY (Email)
+    PRIMARY KEY (email)
 );
 ```

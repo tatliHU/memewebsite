@@ -1,7 +1,6 @@
 import base64
 import psycopg2
 import flask
-from .globals import get_connection
 
 def login(authorization, app):
     try:
@@ -13,7 +12,13 @@ def login(authorization, app):
         return 'Unauthorized', 401
     
     try:
-        connection = get_connection()
+        connection = psycopg2.connect(
+            dbname   = app.config['POSTGRES_DB'],
+            user     = app.config['POSTGRES_USER'],
+            password = app.config['POSTGRES_PASS'],
+            host     = app.config['POSTGRES_HOST'],
+            port     = app.config['POSTGRES_PORT']
+        )
         cursor = connection.cursor()
         app.logger.debug("DB connection opened")
         
@@ -36,12 +41,18 @@ def login(authorization, app):
 
 def get_password(username, app):
     try:
-        connection = get_connection()
+        connection = psycopg2.connect(
+            dbname   = app.config['POSTGRES_DB'],
+            user     = app.config['POSTGRES_USER'],
+            password = app.config['POSTGRES_PASS'],
+            host     = app.config['POSTGRES_HOST'],
+            port     = app.config['POSTGRES_PORT']
+        )
         cursor = connection.cursor()
         app.logger.debug("DB connection opened")
 
         app.logger.debug("Retrieving password")
-        get_user_sql = "SELECT Password FROM users WHERE UserName=%s;"
+        get_user_sql = "SELECT password FROM users WHERE username=%s;"
         cursor.execute(get_user_sql, (username,))
         password = cursor.fetchone()
         if password:

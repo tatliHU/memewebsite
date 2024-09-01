@@ -26,42 +26,42 @@ write_files:
       CREATE USER ${username} WITH PASSWORD '${password}';
       CREATE DATABASE meme WITH OWNER ${username};
       \c meme;
-      CREATE TABLE USERS (
-          UserName VARCHAR(25) NOT NULL,
-          Password VARCHAR(32) NOT NULL,
-          Email VARCHAR(50) NOT NULL,
-          Admin BOOLEAN,
-          PRIMARY KEY (UserName)
-      );
+      CREATE TABLE users (
+      username VARCHAR(25) NOT NULL,
+      password VARCHAR(32) NOT NULL,
+      email VARCHAR(50) NOT NULL,
+      admin BOOLEAN,
+      PRIMARY KEY (username)
+  );
 
-      CREATE TABLE POSTS (
-          PostID SERIAL,
-          Title VARCHAR(50) NOT NULL,
-          Url VARCHAR(255) NOT NULL,
-          Published INT NOT NULL,
-          UserName VARCHAR(25) NOT NULL,
-          Approver VARCHAR(25),
-          FOREIGN KEY (UserName) REFERENCES users(UserName),
-          FOREIGN KEY (Approver) REFERENCES users(UserName),
-        PRIMARY KEY (PostID)
-      );
+  CREATE TABLE posts (
+      post_id SERIAL,
+      title VARCHAR(50) NOT NULL,
+      url VARCHAR(255) NOT NULL,
+      published INT NOT NULL,
+      username VARCHAR(25) NOT NULL,
+      approver VARCHAR(25),
+      FOREIGN KEY (username) REFERENCES users(username),
+      FOREIGN KEY (approver) REFERENCES users(username),
+    PRIMARY KEY (post_id)
+  );
 
-      CREATE TABLE VOTES (
-        PostID INT NOT NULL,
-        UserName VARCHAR(25) NOT NULL,
-        Vote SMALLINT NOT NULL CHECK (Vote IN (-1, 1)),
-        FOREIGN KEY (PostID) REFERENCES posts(PostID),
-        FOREIGN KEY (UserName) REFERENCES users(UserName)
-      );
+  CREATE TABLE votes (
+    post_id INT NOT NULL,
+    username VARCHAR(25) NOT NULL,
+    vote SMALLINT NOT NULL CHECK (vote IN (-1, 1)),
+    FOREIGN KEY (post_id) REFERENCES posts(post_id),
+    FOREIGN KEY (username) REFERENCES users(username)
+  );
 
-      CREATE TABLE PENDING_REGISTRATIONS (
-          Email VARCHAR(40) NOT NULL,
-          UUID VARCHAR(36) NOT NULL,
-        UserName VARCHAR(25) NOT NULL,
-          Password VARCHAR(32) NOT NULL,
-          Created INT NOT NULL,
-          PRIMARY KEY (Email)
-      );
+  CREATE TABLE pending_registrations (
+      email VARCHAR(40) NOT NULL,
+      uuid VARCHAR(36) NOT NULL,
+    username VARCHAR(25) NOT NULL,
+      password VARCHAR(32) NOT NULL,
+      Created INT NOT NULL,
+      PRIMARY KEY (email)
+  );
 
 runcmd:
   - apt-get update

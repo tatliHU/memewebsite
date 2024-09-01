@@ -1,4 +1,4 @@
-from .globals import get_connection
+import psycopg2
 
 def upvote(postID, username, app):
     return vote(postID, username, 1, app)
@@ -8,26 +8,32 @@ def downvote(postID, username, app):
 
 def vote(postID, username, score, app):
     try:
-        connection = get_connection()
+        connection = psycopg2.connect(
+            dbname   = app.config['POSTGRES_DB'],
+            user     = app.config['POSTGRES_USER'],
+            password = app.config['POSTGRES_PASS'],
+            host     = app.config['POSTGRES_HOST'],
+            port     = app.config['POSTGRES_PORT']
+        )
         cursor = connection.cursor()
         app.logger.debug("DB connection opened")
         app.logger.debug(f"Score is {score}")
         
-        get_vote_sql = "SELECT Vote FROM VOTES WHERE UserName=%s AND PostID=%s"
+        get_vote_sql = "SELECT vote FROM votes WHERE username=%s AND post_id=%s"
         cursor.execute(get_vote_sql, (username, postID,))
         vote = cursor.fetchone()
 
         if not vote:
             app.logger.debug("Registering vote")
-            sql = "INSERT INTO VOTES (UserName, PostID, Vote) VALUES (%s, %s, %s);"
+            sql = "INSERT INTO votes (username, post_id, vote) VALUES (%s, %s, %s);"
             values = (username, postID, score,)
         elif int(vote[0])==score:
             app.logger.debug("Cancelling existing vote")
-            sql = "DELETE FROM VOTES WHERE UserName=%s AND PostID=%s;"
+            sql = "DELETE FROM votes WHERE username=%s AND post_id=%s;"
             values = (username, postID,)
         else:
             app.logger.debug("Updating existing vote")
-            sql = "UPDATE VOTES SET Vote = %s WHERE UserName=%s AND PostID=%s;"
+            sql = "UPDATE votes SET vote = %s WHERE username=%s AND post_id=%s;"
             values = (score, username, postID,)
         app.logger.debug(values)
         cursor.execute(sql, values)

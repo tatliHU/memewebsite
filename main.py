@@ -10,9 +10,19 @@ from scripts.vote import upvote, downvote
 import os
 
 app = Flask(__name__)
-app.secret_key = os.environ['SESSION_KEY']
+app.secret_key = os.getenv('SESSION_KEY', 'QXEs3ZChrduSxkHT48WweK')
+app.config['MAX_CONTENT_LENGTH'] = 8*1024*1024
 limiter = Limiter(get_remote_address, app=app, strategy="moving-window",
                   default_limits=["100 per minute", "5 per second"])
+
+app.config['AWS_REGION']    = os.getenv('AWS_REGION', 'bmeme-images')
+app.config['S3_BUCKET']     = os.getenv('S3_BUCKET', 'eu-north-1')
+app.config['SENDER_EMAIL']  = os.getenv('SENDER_EMAIL', 'sender@example.com')
+app.config['POSTGRES_HOST'] = os.getenv('POSTGRES_HOST', 'localhost')
+app.config['POSTGRES_PORT'] = os.getenv('POSTGRES_PORT', '5432')
+app.config['POSTGRES_DB']   = os.getenv('POSTGRES_DB', 'meme')
+app.config['POSTGRES_USER'] = os.getenv('POSTGRES_USER', 'atka')
+app.config['POSTGRES_PASS'] = os.getenv('POSTGRES_PASS', 'atka')
 
 @app.route("/")
 def index():
