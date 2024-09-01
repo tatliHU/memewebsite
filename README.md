@@ -21,23 +21,23 @@ For sending registration verification emails.
 
 ### Configurable options
 These are all configured as env vars:
-- SESSION_KEY
+- SESSION_KEY\
 Security feature for encoding cookies
-- AWS_REGION
+- AWS_REGION\
 AWS region of your S3 bucket
-- S3_BUCKET
+- S3_BUCKET\
 AWS S3 bucket name for storing the images
-- SENDER_EMAIL
+- SENDER_EMAIL\
 Sender email mail configured in your Amazon SES for registration verification emails
-- POSTGRES_HOST
+- POSTGRES_HOST\
 Your database server URL
-- POSTGRES_PORT
+- POSTGRES_PORT\
 Your database server port
-- POSTGRES_DB
+- POSTGRES_DB\
 Database to use
-- POSTGRES_USER
+- POSTGRES_USER\
 User to connect to the database server
-- POSTGRES_PASS
+- POSTGRES_PASS\
 Password to connect to your database server
 - AWS access related env vars
 
