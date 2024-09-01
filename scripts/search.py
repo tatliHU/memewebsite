@@ -19,6 +19,18 @@ def fresh(page, app):
             LIMIT 10 OFFSET (%s - 1) * 10;"""
     return to_json(search(sql, (page,), app))
 
+def trash(page, app):
+    sql = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, COALESCE(SUM(v.vote), 0) AS score
+            FROM posts p
+            LEFT JOIN votes v ON p.post_id = v.post_id
+            GROUP BY p.post_id
+            HAVING COALESCE(SUM(v.vote), 0) BETWEEN -30 AND -1
+            ORDER BY published
+            LIMIT 10 OFFSET (%s - 1) * 10;"""
+    a = to_json(search(sql, (page,), app))
+    app.logger.debug("ertek: "+str(a))
+    return a
+
 def posts_by_user(user, page, app):
     sql = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, COALESCE(SUM(v.vote), 0) AS score
             FROM posts p
