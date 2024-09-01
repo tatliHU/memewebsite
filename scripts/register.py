@@ -24,6 +24,14 @@ def register(username, password, email, app):
             app.logger.debug("User found")
             return 'User already exists', 400
         
+        app.logger.debug("Checking if email is already in use")
+        get_user_sql = "SELECT username FROM users WHERE email=%s;"
+        cursor.execute(get_user_sql, (email,))
+        user = cursor.fetchone()
+        if user:
+            app.logger.debug("Email found")
+            return 'Email is already registered for a user', 400
+        
         app.logger.debug("Deleting old registration if exists")
         delete_registration_sql = "DELETE FROM pending_registrations WHERE email=%s;"
         cursor.execute(delete_registration_sql, (email,))
@@ -35,12 +43,13 @@ def register(username, password, email, app):
             VALUES (%s, %s, %s, %s, %s);
         '''
         cursor.execute(create_registration_sql, (username, password, email, uuid, int(round(time.time())),))
-
         connection.commit()
         
         app.logger.debug("Sending email for verification")
-        send_email(email, uuid, app)
-        return 'Created', 201
+        if send_email(email, uuid, app):
+            return 'Created', 201
+        else:
+            return 'An error occured while sending email', 500
 
     except Exception as e:
         app.logger.debug(e)
@@ -116,9 +125,11 @@ def send_email(email, uuid, app):
                     'Data': 'Email verification',
                 },
             },
-            Source="torok.attila@protonmail.com",
+            Source=app.config['SENDER_EMAIL'],
         )
+        return True
     except ClientError as e:
-        print(f"Error: {e.response['Error']['Message']}")
-    finally:
-        app.logger.debug(f"Email sent! Message ID: {response['MessageId']}")
+        app.logger.debug(e.response['Error']['Message'])
+    except:
+        app.logger.debug("Unknown error when sending email")
+    return False

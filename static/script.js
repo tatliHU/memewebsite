@@ -100,3 +100,33 @@ function submitLogin() {
         alert('Login failed');
     });
 }
+
+function submitRegister() {
+    const username = document.getElementById('register-username').value;
+    const password = document.getElementById('register-password').value;
+    const email = document.getElementById('register-email').value;
+
+    fetch('/api/register', {
+        method: 'POST',
+        body: JSON.stringify({ username, password, email }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error('Registration failed');
+    })
+    .then(data => {
+        // Handle success
+        console.log('Login successful', data);
+        window.location.href = '/'; // Redirect on success
+    })
+    .catch(error => {
+        // Handle error
+        console.error('Error:', error);
+        alert('Registration failed');
+    });
+}

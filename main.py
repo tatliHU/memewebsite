@@ -120,7 +120,6 @@ def upload_api_endpoint():
 
 @app.route("/api/vote", methods=['POST'])
 def vote_api_endpoint():
-    #session['username'] = 'atka' left here for testing until UI login implemented
     if 'username' in session:
         if int(request.json['delta']) == 1:
             return upvote(request.json['postID'], session['username'], app=app)

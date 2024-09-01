@@ -27,9 +27,7 @@ def trash(page, app):
             HAVING COALESCE(SUM(v.vote), 0) BETWEEN -30 AND -1
             ORDER BY published
             LIMIT 10 OFFSET (%s - 1) * 10;"""
-    a = to_json(search(sql, (page,), app))
-    app.logger.debug("ertek: "+str(a))
-    return a
+    return to_json(search(sql, (page,), app))
 
 def posts_by_user(user, page, app):
     sql = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, COALESCE(SUM(v.vote), 0) AS score
