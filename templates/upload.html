@@ -71,12 +71,9 @@
             <li><a href="/fresh">Újdonságok</a></li>
             <li><a href="/top">Toplista</a></li>
             <li><a href="/trash">Kuka</a></li>
-            <li><a href="/search">Kesesés</a></li>
+            <li><a href="/search">Keresés</a></li>
             <li><a href="/upload">Feltöltés</a></li>
         </ul>
-        <div class="login">
-            <a href="/login">Belépés</a>
-        </div>
     </div>
     <div class="upload-container">
         <h2>Töltsd fel a saját mémed</h2>
@@ -91,12 +88,16 @@
             </div>
             <div class="form-group">
                 <label for="tags">Adj cimkéket:</label>
-                <select id="tags" name="tags" multiple required>
-                    <option value="all">ALL</option>
-                    <option value="vik">VIK</option>
-                    <option value="gpk">GPK</option>
-                    <option value="gtk">GTK</option>
-                    <option value="vbk">VBK</option>
+                <select id="tags" name="tags[]" multiple required>
+                    <option value="tag_all">ALL</option>
+                    <option value="tag_emk">ÉMK</option>
+                    <option value="tag_gpk">GPK</option>
+                    <option value="tag_epk">ÉPK</option>
+                    <option value="tag_vbk">VBK</option>
+                    <option value="tag_vik">VIK</option>
+                    <option value="tag_kjk">KJK</option>
+                    <option value="tag_ttk">TTK</option>
+                    <option value="tag_gtk">GTK</option>
                 </select>
             </div>
             <div class="form-group">
@@ -133,6 +134,5 @@
         return false;  // Ensure the form doesn't try to submit the usual way
     }
 </script>
-
 </body>
 </html>

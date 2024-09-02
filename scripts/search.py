@@ -2,7 +2,8 @@ import psycopg2
 from psycopg2.extensions import quote_ident
 
 def top(page, app):
-    sql = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, COALESCE(SUM(v.vote), 0) AS score
+    sql = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, COALESCE(SUM(v.vote), 0) AS score,
+            p.tag_all, p.tag_emk, p.tag_gpk, p.tag_epk, p.tag_vbk, p.tag_vik, p.tag_kjk, p.tag_ttk, p.tag_gtk
             FROM posts p
             LEFT JOIN votes v ON p.post_id = v.post_id
             GROUP BY p.post_id
@@ -11,7 +12,8 @@ def top(page, app):
     return to_json(search(sql, (page,), app))
 
 def fresh(page, app):
-    sql = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, COALESCE(SUM(v.vote), 0) AS score
+    sql = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, COALESCE(SUM(v.vote), 0) AS score,
+            p.tag_all, p.tag_emk, p.tag_gpk, p.tag_epk, p.tag_vbk, p.tag_vik, p.tag_kjk, p.tag_ttk, p.tag_gtk
             FROM posts p
             LEFT JOIN votes v ON p.post_id = v.post_id
             GROUP BY p.post_id
@@ -20,7 +22,8 @@ def fresh(page, app):
     return to_json(search(sql, (page,), app))
 
 def trash(page, app):
-    sql = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, COALESCE(SUM(v.vote), 0) AS score
+    sql = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, COALESCE(SUM(v.vote), 0) AS score,
+            p.tag_all, p.tag_emk, p.tag_gpk, p.tag_epk, p.tag_vbk, p.tag_vik, p.tag_kjk, p.tag_ttk, p.tag_gtk
             FROM posts p
             LEFT JOIN votes v ON p.post_id = v.post_id
             GROUP BY p.post_id
@@ -30,7 +33,8 @@ def trash(page, app):
     return to_json(search(sql, (page,), app))
 
 def posts_by_user(user, page, app):
-    sql = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, COALESCE(SUM(v.vote), 0) AS score
+    sql = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, COALESCE(SUM(v.vote), 0) AS score,
+            p.tag_all, p.tag_emk, p.tag_gpk, p.tag_epk, p.tag_vbk, p.tag_vik, p.tag_kjk, p.tag_ttk, p.tag_gtk
             FROM posts p
             LEFT JOIN votes v ON p.post_id = v.post_id
             GROUP BY p.post_id
@@ -65,6 +69,7 @@ def search(sql, values, app):
             app.logger.debug("DB connection closed")
 
 def to_json(list):
+    all_tags = ('tag_all', 'tag_emk', 'tag_gpk', 'tag_epk', 'tag_vbk', 'tag_vik', 'tag_kjk', 'tag_ttk', 'tag_gtk')
     out = []
     if list:
         for i in list:
@@ -76,5 +81,10 @@ def to_json(list):
             obj['username']  = i[4]
             obj['approver']  = i[5]
             obj['score']     = i[6]
+            tags = []
+            for k in range(len(all_tags)):
+                if i[7+k]:
+                    tags.append(all_tags[k])
+            obj['tags']      = tags
             out.insert(0, obj)
     return out

@@ -114,7 +114,7 @@ def users_api_endpoint(page):
 @limiter.limit("3 per minute")
 def upload_api_endpoint():
     if 'username' in session:
-        return upload(request.files['image'], request.form['title'], request.form['tags'], session['username'], app=app)
+        return upload(request.files['image'], request.form['title'], request.form.getlist('tags[]'), session['username'], app=app)
     else:
         return 'Login required', 401
 

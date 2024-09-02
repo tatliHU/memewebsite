@@ -5,6 +5,11 @@ import uuid
 import time
 
 def upload(image, title, tags, username, app):
+    all_tags = ('tag_all', 'tag_emk', 'tag_gpk', 'tag_epk', 'tag_vbk', 'tag_vik', 'tag_kjk', 'tag_ttk', 'tag_gtk')
+    tags_dict = {i : 'false' for i in all_tags}
+    for i in tags:
+        tags_dict[i] = 'true'
+    
     if image.filename == '':
         return 'No image selected', 400
 
@@ -28,14 +33,20 @@ def upload(image, title, tags, username, app):
         
         app.logger.debug("Uploading metadata to DB")
         create_user_sql = '''
-            INSERT INTO posts (title, url, published, username)
-            VALUES (%s, %s, %s, %s);
+            INSERT INTO posts (
+                title, url, published, username,
+                tag_all, tag_emk, tag_gpk, tag_epk, tag_vbk, tag_vik, tag_kjk, tag_ttk, tag_gtk
+                )
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         '''
         values = (
             title,
             f"https://{app.config['AWS_REGION']}.s3.{app.config['S3_BUCKET']}.amazonaws.com/{id}.{file_format}",
             int(round(time.time())),
             username,
+            tags_dict['tag_all'], tags_dict['tag_emk'], tags_dict['tag_gpk'],
+            tags_dict['tag_epk'], tags_dict['tag_vbk'], tags_dict['tag_vik'],
+            tags_dict['tag_kjk'], tags_dict['tag_ttk'], tags_dict['tag_gtk']
         )
         app.logger.debug(values)
         cursor.execute(create_user_sql, values)

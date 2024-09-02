@@ -13,17 +13,25 @@ function displayImages(images) {
     gallery.innerHTML = '';
 
     images.forEach(image => {
+        let hrefs = '';
+        image.tags.forEach(tag => {
+            const href = `<a href="/tag/${tag}">${tag}</a>`;
+            hrefs += href + '\n';
+        });
+        
         const imageCard = document.createElement('div');
         imageCard.className = 'image-card';
 
         imageCard.innerHTML = `
             <div class="title">${image.title}</div>
-            <img src="${image.url}" alt="${image.title}">
+            <img src="${image.url}" alt="Unable to load image">
             <div class="voting">
                 <button onclick="vote(${image.postid}, 1)">Upvote</button>
                 <div class="score" id="score-${image.postid}">${image.score}</div>
                 <button onclick="vote(${image.postid}, -1)">Downvote</button>
             </div>
+            <a href="/user/${image.username}">${image.username}</a>
+            <span>${hrefs}</span>
         `;
 
         gallery.appendChild(imageCard);
