@@ -32,6 +32,15 @@ def trash(page, app):
             LIMIT 10 OFFSET (%s - 1) * 10;"""
     return to_json(search(sql, (page,), app))
 
+def random(page, app):
+    sql = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, COALESCE(SUM(v.vote), 0) AS score,
+            p.tag_all, p.tag_emk, p.tag_gpk, p.tag_epk, p.tag_vbk, p.tag_vik, p.tag_kjk, p.tag_ttk, p.tag_gtk
+            FROM posts p TABLESAMPLE SYSTEM_ROWS(10)
+            LEFT JOIN votes v ON p.post_id = v.post_id
+            GROUP BY p.post_id
+            ORDER BY random();"""
+    return to_json(search(sql, (page,), app))
+
 def posts_by_user(user, page, app):
     sql = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, COALESCE(SUM(v.vote), 0) AS score,
             p.tag_all, p.tag_emk, p.tag_gpk, p.tag_epk, p.tag_vbk, p.tag_vik, p.tag_kjk, p.tag_ttk, p.tag_gtk

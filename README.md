@@ -63,6 +63,7 @@ flask --app main run --debug
 CREATE USER atka WITH PASSWORD 'atka';
 CREATE DATABASE meme WITH OWNER atka;
 \c meme;
+CREATE EXTENSION tsm_system_rows;
 CREATE TABLE users (
     username VARCHAR(25) NOT NULL,
     password VARCHAR(32) NOT NULL,

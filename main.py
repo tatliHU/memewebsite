@@ -4,7 +4,7 @@ from flask_limiter.util import get_remote_address
 from scripts.register import register, verify
 from scripts.login import login
 from scripts.change_password import change_password
-from scripts.search import fresh, top, trash, posts_by_user
+from scripts.search import fresh, top, trash, random, posts_by_user
 from scripts.upload import upload
 from scripts.vote import upvote, downvote
 import os
@@ -39,6 +39,10 @@ def top_endpoint():
 @app.route("/trash", methods=['GET'])
 def trash_endpoint():
     return render_template('index.html', func="trash", page=1)
+
+@app.route("/random", methods=['GET'])
+def random_endpoint():
+    return render_template('index.html', func="random", page=1)
 
 @app.route("/upload", methods=['GET'])
 def upload_endpoint():
@@ -105,6 +109,10 @@ def top_api_endpoint(page):
 @app.route("/api/trash/<page>", methods=['GET'])
 def trash_api_endpoint(page):
     return trash(page, app=app)
+
+@app.route("/api/random/<page>", methods=['GET'])
+def random_api_endpoint(page):
+    return random(page, app=app)
 
 @app.route("/api/users/<page>", methods=['GET'])
 def users_api_endpoint(page):
