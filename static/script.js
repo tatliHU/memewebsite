@@ -1,6 +1,6 @@
-async function loadImages(func, page) {
+async function loadImages(func, page, query) {
     try {
-        const response = await fetch(`http://localhost:5000/api/${func}/${page}`);
+        const response = await fetch(`http://localhost:5000/api/${func}/${page}?${query}`);
         const images = await response.json();
         displayImages(images);
     } catch (error) {

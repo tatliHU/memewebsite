@@ -4,7 +4,7 @@ from flask_limiter.util import get_remote_address
 from scripts.register import register, verify
 from scripts.login import login
 from scripts.change_password import change_password
-from scripts.search import fresh, top, trash, random, posts_by_user
+from scripts.search import fresh, top, trash, random, posts_by_user, posts_by_title
 from scripts.upload import upload
 from scripts.vote import upvote, downvote
 import os
@@ -30,19 +30,23 @@ def index():
 
 @app.route("/fresh", methods=['GET'])
 def fresh_endpoint():
-    return render_template('index.html', func="fresh", page=1)
+    return render_template('index.html', func="fresh", page=1, query="")
 
 @app.route("/top", methods=['GET'])
 def top_endpoint():
-    return render_template('index.html', func="top", page=1)
+    return render_template('index.html', func="top", page=1, query="")
 
 @app.route("/trash", methods=['GET'])
 def trash_endpoint():
-    return render_template('index.html', func="trash", page=1)
+    return render_template('index.html', func="trash", page=1, query="")
 
 @app.route("/random", methods=['GET'])
 def random_endpoint():
-    return render_template('index.html', func="random", page=1)
+    return render_template('index.html', func="random", page=1, query="")
+
+@app.route("/search", methods=['GET'])
+def search_endpoint():
+    return render_template('index.html', func="search", page=1, query="title="+request.args.get('title'))
 
 @app.route("/upload", methods=['GET'])
 def upload_endpoint():
@@ -113,6 +117,10 @@ def trash_api_endpoint(page):
 @app.route("/api/random/<page>", methods=['GET'])
 def random_api_endpoint(page):
     return random(page, app=app)
+
+@app.route("/api/search/<page>", methods=['GET'])
+def search_api_endpoint(page):
+    return posts_by_title(request.args.get('title'), page, app=app)
 
 @app.route("/api/users/<page>", methods=['GET'])
 def users_api_endpoint(page):

@@ -52,6 +52,17 @@ def posts_by_user(user, page, app):
             WHERE username=%s;"""
     return to_json(search(sql, (page, user,), app))
 
+def posts_by_title(title, page, app):
+    sql = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, COALESCE(SUM(v.vote), 0) AS score,
+            p.tag_all, p.tag_emk, p.tag_gpk, p.tag_epk, p.tag_vbk, p.tag_vik, p.tag_kjk, p.tag_ttk, p.tag_gtk
+            FROM posts p
+            LEFT JOIN votes v ON p.post_id = v.post_id
+            WHERE p.title ILIKE %s
+            GROUP BY p.post_id
+            ORDER BY published
+            LIMIT 10 OFFSET (%s - 1) * 10;"""
+    return to_json(search(sql, ('%'+title+'%', page,), app))
+
 def search(sql, values, app):
     try:
         connection = psycopg2.connect(

@@ -72,8 +72,10 @@
             <li><a href="/top">Toplista</a></li>
             <li><a href="/trash">Kuka</a></li>
             <li><a href="/random">Random</a></li>
-            <li><a href="/search">Keresés</a></li>
             <li><a href="/upload">Feltöltés</a></li>
+            <form id="search-input" action="/search" method="GET"></form>
+                <input type="text" name="title" placeholder="Search" value="">
+            </form>
         </ul>
     </div>
     <div class="upload-container">
@@ -108,6 +110,13 @@
     </div>
 
 <script>
+    const searchForm = document.getElementById('search-input');
+    searchForm.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            searchForm.submit();
+        }
+    });
     function handleFormSubmit(event) {
         event.preventDefault();  // Prevent the default form submission
 
