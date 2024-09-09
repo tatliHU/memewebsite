@@ -30,23 +30,28 @@ def index():
 
 @app.route("/fresh", methods=['GET'])
 def fresh_endpoint():
-    return render_template('index.html', func="fresh", page=1, query="")
+    return render_template('index.html', func="fresh", page=request.args.get('page', 1), query="")
 
 @app.route("/top", methods=['GET'])
 def top_endpoint():
-    return render_template('index.html', func="top", page=1, query="")
+    return render_template('index.html', func="top", page=request.args.get('page', 1), query="")
 
 @app.route("/trash", methods=['GET'])
 def trash_endpoint():
-    return render_template('index.html', func="trash", page=1, query="")
+    return render_template('index.html', func="trash", page=request.args.get('page', 1), query="")
 
 @app.route("/random", methods=['GET'])
 def random_endpoint():
-    return render_template('index.html', func="random", page=1, query="")
+    return render_template('index.html', func="random", page=request.args.get('page', 1), query="")
 
 @app.route("/search", methods=['GET'])
 def search_endpoint():
-    return render_template('index.html', func="search", page=1, query="title="+request.args.get('title'))
+    return render_template(
+        'index.html',
+        func="search",
+        page=request.args.get('page', 1),
+        query="title="+request.args.get('title')
+    )
 
 @app.route("/upload", methods=['GET'])
 def upload_endpoint():
@@ -102,29 +107,29 @@ def change_password_api_endpoint():
 def verify_api_endpoint(uuid):
     return verify(uuid, app)
 
-@app.route("/api/fresh/<page>", methods=['GET'])
-def fresh_api_endpoint(page):
-    return fresh(page, app=app)
+@app.route("/api/fresh", methods=['GET'])
+def fresh_api_endpoint():
+    return fresh(request.args.get('page', ''), app=app)
 
-@app.route("/api/top/<page>", methods=['GET'])
-def top_api_endpoint(page):
-    return top(page, app=app)
+@app.route("/api/top", methods=['GET'])
+def top_api_endpoint():
+    return top(request.args.get('page', ''), app=app)
 
-@app.route("/api/trash/<page>", methods=['GET'])
-def trash_api_endpoint(page):
-    return trash(page, app=app)
+@app.route("/api/trash", methods=['GET'])
+def trash_api_endpoint():
+    return trash(request.args.get('page', ''), app=app)
 
-@app.route("/api/random/<page>", methods=['GET'])
-def random_api_endpoint(page):
-    return random(page, app=app)
+@app.route("/api/random", methods=['GET'])
+def random_api_endpoint():
+    return random(request.args.get('page', ''), app=app)
 
-@app.route("/api/search/<page>", methods=['GET'])
-def search_api_endpoint(page):
-    return posts_by_title(request.args.get('title'), page, app=app)
+@app.route("/api/search", methods=['GET'])
+def search_api_endpoint():
+    return posts_by_title(request.args.get('title'), request.args.get('page', ''), app=app)
 
-@app.route("/api/users/<page>", methods=['GET'])
-def users_api_endpoint(page):
-    return posts_by_user(request.args.get('name', ''), page, app=app)
+@app.route("/api/users", methods=['GET'])
+def users_api_endpoint():
+    return posts_by_user(request.args.get('name', ''), request.args.get('page', ''), app=app)
 
 @app.route("/api/upload", methods=['POST'])
 @limiter.limit("3 per minute")

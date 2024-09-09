@@ -1,6 +1,6 @@
 async function loadImages(func, page, query) {
     try {
-        const response = await fetch(`http://localhost:5000/api/${func}/${page}?${query}`);
+        const response = await fetch(`/api/${func}?page=${page}&${query}`);
         const images = await response.json();
         displayImages(images);
     } catch (error) {
@@ -40,7 +40,7 @@ function displayImages(images) {
 
 async function vote(postID, delta) {
     try {
-        const response = await fetch(`http://localhost:5000/api/vote`, {
+        const response = await fetch(`/api/vote`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
