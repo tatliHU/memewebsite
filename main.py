@@ -23,6 +23,7 @@ app.config['POSTGRES_PORT'] = os.getenv('POSTGRES_PORT', '5432')
 app.config['POSTGRES_DB']   = os.getenv('POSTGRES_DB', 'meme')
 app.config['POSTGRES_USER'] = os.getenv('POSTGRES_USER', 'atka')
 app.config['POSTGRES_PASS'] = os.getenv('POSTGRES_PASS', 'atka')
+app.config['WEBSITE_URL']   = os.getenv('WEBSITE_URL', 'http://localhost:5000')
 
 @app.route("/")
 def index():

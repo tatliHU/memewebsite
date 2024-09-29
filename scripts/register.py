@@ -102,7 +102,7 @@ def verify(uuid, app):
 def send_email(email, uuid, app):
     app.logger.debug(email+" with "+uuid)
     with open('files/email.html', 'r') as file:
-        body_html = file.read()
+        body_html = file.read().replace('LINK', f"{app.config['WEBSITE_URL']}/api/verify/{str(uuid)}")
     ses_client = boto3.client('ses')
     try:
         response = ses_client.send_email(
@@ -114,10 +114,6 @@ def send_email(email, uuid, app):
                     'Html': {
                         'Charset': 'UTF-8',
                         'Data': body_html,
-                    },
-                    'Text': {
-                        'Charset': 'UTF-8',
-                        'Data': str(uuid),
                     },
                 },
                 'Subject': {

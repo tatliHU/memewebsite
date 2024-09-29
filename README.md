@@ -6,7 +6,6 @@ Multi-cloud meme website.
 - Your own domain
 
 ### Planned features
-- Email verification (partially done)
 - Domain
 - Automatic certificate creation and renewal with Let's encrypt
 
@@ -39,6 +38,8 @@ Database to use
 User to connect to the database server
 - POSTGRES_PASS\
 Password to connect to your database server
+- WEBSITE_URL\
+URL (and optionally port) your website listens on. Example: https://mysite.com:5000
 - AWS access related env vars
 
 ## Remote setup with Terraform
