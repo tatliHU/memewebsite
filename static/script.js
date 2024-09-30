@@ -129,7 +129,7 @@ function submitRegister() {
     })
     .then(data => {
         // Handle success
-        console.log('Login successful', data);
+        console.log('Registration was successful', data);
         window.location.href = '/'; // Redirect on success
     })
     .catch(error => {
@@ -137,4 +137,29 @@ function submitRegister() {
         console.error('Error:', error);
         alert('Registration failed');
     });
+}
+
+function loadPageSelector(func, page) {
+    const pageSelector = document.getElementById('pageSelector');
+    pageSelector.innerHTML = '';
+
+    let pageNumber = parseInt(page);
+    let start = (pageNumber <= 4) ? 1 : pageNumber - 3;
+    let end = (pageNumber <= 4) ? 7 : pageNumber + 3;
+    for (let i = start; i <= end; i++) {
+        pageHTML = `
+            <form action="/${func}">
+                <input type="submit" value="${i}" class="pagerButton" />
+                <input type="hidden" name="page" value="${i}" />
+            </form>
+        `;
+        currentPageHTML = `
+            <form action="javascript:void(0);">
+                <input type="submit" value="${i}" class="pagerButtonCurrent" />
+            </form>
+        `;
+        const pageButton = document.createElement('div');
+        pageButton.innerHTML = i==page ? currentPageHTML : pageHTML;
+        pageSelector.appendChild(pageButton);
+    }
 }

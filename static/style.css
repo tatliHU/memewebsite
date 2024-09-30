@@ -8,7 +8,7 @@ body {
     display: flex;
     align-items: flex-start;
     width: 100%;
-    height: 100vh;
+    height: auto;
     gap: 10px;
 }
 .gallery {
@@ -166,4 +166,34 @@ body {
 }
 .form-group button:hover {
     background-color: #218838;
+}
+#pageSelector {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: center;
+}
+.pagerButton {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.pagerButton:hover {
+    background-color: #0056b3;
+}
+.pagerButtonCurrent {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.pagerButtonCurrent:hover {
+    background-color: #28a745;
 }
