@@ -41,15 +41,25 @@ def random(page, app):
             ORDER BY random();"""
     return to_json(search(sql, (page,), app))
 
+def approve(page, app):
+    sql = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, 0 AS score,
+            p.tag_all, p.tag_emk, p.tag_gpk, p.tag_epk, p.tag_vbk, p.tag_vik, p.tag_kjk, p.tag_ttk, p.tag_gtk
+            FROM posts p
+            WHERE approver IS NULL
+            GROUP BY p.post_id
+            ORDER BY published ASC
+            LIMIT 10 OFFSET (%s - 1) * 10;"""
+    return to_json(search(sql, (page,), app))
+
 def posts_by_user(user, page, app):
     sql = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, COALESCE(SUM(v.vote), 0) AS score,
             p.tag_all, p.tag_emk, p.tag_gpk, p.tag_epk, p.tag_vbk, p.tag_vik, p.tag_kjk, p.tag_ttk, p.tag_gtk
             FROM posts p
             LEFT JOIN votes v ON p.post_id = v.post_id
+            WHERE username=%s
             GROUP BY p.post_id
             ORDER BY published
-            LIMIT 10 OFFSET (%s - 1) * 10
-            WHERE username=%s;"""
+            LIMIT 10 OFFSET (%s - 1) * 10;"""
     return to_json(search(sql, (page, user,), app))
 
 def posts_by_title(title, page, app):

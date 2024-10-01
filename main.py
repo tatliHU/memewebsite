@@ -4,9 +4,10 @@ from flask_limiter.util import get_remote_address
 from scripts.register import register, verify
 from scripts.login import login
 from scripts.change_password import change_password
-from scripts.search import fresh, top, trash, random, posts_by_user, posts_by_title
+from scripts.search import fresh, top, trash, random, posts_by_user, posts_by_title, approve
 from scripts.upload import upload
 from scripts.vote import upvote, downvote
+from scripts.approve import accept, deny
 import os
 
 app = Flask(__name__)
@@ -31,19 +32,19 @@ def index():
 
 @app.route("/fresh", methods=['GET'])
 def fresh_endpoint():
-    return render_template('index.html', func="fresh", page=request.args.get('page', 1), query="")
+    return render_template('index.html', func="fresh", page=request.args.get('page', 1), voteEndpoint="vote")
 
 @app.route("/top", methods=['GET'])
 def top_endpoint():
-    return render_template('index.html', func="top", page=request.args.get('page', 1), query="")
+    return render_template('index.html', func="top", page=request.args.get('page', 1), voteEndpoint="vote")
 
 @app.route("/trash", methods=['GET'])
 def trash_endpoint():
-    return render_template('index.html', func="trash", page=request.args.get('page', 1), query="")
+    return render_template('index.html', func="trash", page=request.args.get('page', 1), voteEndpoint="vote")
 
 @app.route("/random", methods=['GET'])
 def random_endpoint():
-    return render_template('index.html', func="random", page=request.args.get('page', 1), query="")
+    return render_template('index.html', func="random", page=request.args.get('page', 1), voteEndpoint="vote")
 
 @app.route("/search", methods=['GET'])
 def search_endpoint():
@@ -51,7 +52,8 @@ def search_endpoint():
         'index.html',
         func="search",
         page=request.args.get('page', 1),
-        query="title="+request.args.get('title')
+        query="title="+request.args.get('title'),
+        voteEndpoint="vote"
     )
 
 @app.route("/upload", methods=['GET'])
@@ -61,6 +63,10 @@ def upload_endpoint():
 @app.route("/debug", methods=['GET'])
 def debug_endpoint():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'debug.html')
+
+@app.route("/admin", methods=['GET'])
+def admin_endpoint():
+    return render_template('index.html', func="admin", page=request.args.get('page', 1), voteEndpoint="approve")
 
 # static files
 @app.route("/favicon.ico", methods=['GET'])
@@ -147,6 +153,22 @@ def vote_api_endpoint():
             return upvote(request.json['postID'], session['username'], app=app)
         elif int(request.json['delta']) == -1:
             return downvote(request.json['postID'], session['username'], app=app)
+        else:
+            return 'Invalid vote', 400
+    else:
+        return 'Login required', 401
+
+@app.route("/api/admin", methods=['GET'])
+def admin_api_endpoint():
+    return approve(request.args.get('page', ''), app=app)
+
+@app.route("/api/approve", methods=['POST'])
+def approve_api_endpoint():
+    if 'username' in session:
+        if int(request.json['delta']) == 1:
+            return accept(request.json['postID'], session['username'], app=app)
+        elif int(request.json['delta']) == -1:
+            return deny(request.json['postID'], session['username'], app=app)
         else:
             return 'Invalid vote', 400
     else:

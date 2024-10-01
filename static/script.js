@@ -1,14 +1,14 @@
-async function loadImages(func, page, query) {
+async function loadImages(func, page, query = "", voteEndpoint = "vote") {
     try {
         const response = await fetch(`/api/${func}?page=${page}&${query}`);
         const images = await response.json();
-        displayImages(images);
+        displayImages(images, voteEndpoint);
     } catch (error) {
         console.error('Error loading images:', error);
     }
 }
 
-function displayImages(images) {
+function displayImages(images, voteEndpoint) {
     const gallery = document.getElementById('gallery');
     gallery.innerHTML = '';
 
@@ -26,9 +26,9 @@ function displayImages(images) {
             <div class="title">${image.title}</div>
             <img src="${image.url}" alt="Unable to load image">
             <div class="voting">
-                <button onclick="vote(${image.postid}, 1)">Upvote</button>
+                <button onclick="vote(${image.postid}, 1, '${voteEndpoint}')">Upvote</button>
                 <div class="score" id="score-${image.postid}">${image.score}</div>
-                <button onclick="vote(${image.postid}, -1)">Downvote</button>
+                <button onclick="vote(${image.postid}, -1, '${voteEndpoint}')">Downvote</button>
             </div>
             <a href="/user/${image.username}">${image.username}</a>
             <span>${hrefs}</span>
@@ -38,9 +38,9 @@ function displayImages(images) {
     });
 }
 
-async function vote(postID, delta) {
+async function vote(postID, delta, voteEndpoint) {
     try {
-        const response = await fetch(`/api/vote`, {
+        const response = await fetch(`/api/${voteEndpoint}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
