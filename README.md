@@ -1,5 +1,5 @@
 # memewebsite
-Multi-cloud meme website.
+Multi-cloud meme website designed to opearate on ultra-low infra budget.
 
 ## You will need
 - AWS account with an S3 bucket
