@@ -1,7 +1,7 @@
 import psycopg2
 
-def deny(postID, app):
-    return approve(postID, None, False, app)
+def deny(postID, approver, app):
+    return approve(postID, approver, False, app)
 
 def accept(postID, approver, app):
     return approve(postID, approver, True, app)

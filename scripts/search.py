@@ -6,6 +6,7 @@ def top(page, app):
             p.tag_all, p.tag_emk, p.tag_gpk, p.tag_epk, p.tag_vbk, p.tag_vik, p.tag_kjk, p.tag_ttk, p.tag_gtk
             FROM posts p
             LEFT JOIN votes v ON p.post_id = v.post_id
+            WHERE approved IS true
             GROUP BY p.post_id
             ORDER BY score
             LIMIT 10 OFFSET (%s - 1) * 10;"""
@@ -16,6 +17,7 @@ def fresh(page, app):
             p.tag_all, p.tag_emk, p.tag_gpk, p.tag_epk, p.tag_vbk, p.tag_vik, p.tag_kjk, p.tag_ttk, p.tag_gtk
             FROM posts p
             LEFT JOIN votes v ON p.post_id = v.post_id
+            WHERE approved IS true
             GROUP BY p.post_id
             ORDER BY published
             LIMIT 10 OFFSET (%s - 1) * 10;"""
@@ -26,6 +28,7 @@ def trash(page, app):
             p.tag_all, p.tag_emk, p.tag_gpk, p.tag_epk, p.tag_vbk, p.tag_vik, p.tag_kjk, p.tag_ttk, p.tag_gtk
             FROM posts p
             LEFT JOIN votes v ON p.post_id = v.post_id
+            WHERE approved IS true
             GROUP BY p.post_id
             HAVING COALESCE(SUM(v.vote), 0) BETWEEN -30 AND -1
             ORDER BY published
@@ -37,6 +40,7 @@ def random(page, app):
             p.tag_all, p.tag_emk, p.tag_gpk, p.tag_epk, p.tag_vbk, p.tag_vik, p.tag_kjk, p.tag_ttk, p.tag_gtk
             FROM posts p TABLESAMPLE SYSTEM_ROWS(10)
             LEFT JOIN votes v ON p.post_id = v.post_id
+            WHERE approved IS true
             GROUP BY p.post_id
             ORDER BY random();"""
     return to_json(search(sql, (page,), app))
@@ -45,7 +49,7 @@ def approve(page, app):
     sql = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, 0 AS score,
             p.tag_all, p.tag_emk, p.tag_gpk, p.tag_epk, p.tag_vbk, p.tag_vik, p.tag_kjk, p.tag_ttk, p.tag_gtk
             FROM posts p
-            WHERE approver IS NULL
+            WHERE approved IS NULL
             GROUP BY p.post_id
             ORDER BY published ASC
             LIMIT 10 OFFSET (%s - 1) * 10;"""
@@ -56,7 +60,7 @@ def posts_by_user(user, page, app):
             p.tag_all, p.tag_emk, p.tag_gpk, p.tag_epk, p.tag_vbk, p.tag_vik, p.tag_kjk, p.tag_ttk, p.tag_gtk
             FROM posts p
             LEFT JOIN votes v ON p.post_id = v.post_id
-            WHERE username=%s
+            WHERE username=%s AND approved IS true
             GROUP BY p.post_id
             ORDER BY published
             LIMIT 10 OFFSET (%s - 1) * 10;"""
