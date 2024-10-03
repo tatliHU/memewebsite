@@ -43,8 +43,10 @@ URL (and optionally port) your website listens on. Example: https://mysite.com:5
 - AWS access related env vars
 
 ## Remote setup with Terraform
-- Create a Hetzner account and a project with a read-write API key
-- Replace token in terraform/terraform.tfvars
+- Create a Hetzner account and a project
+- Create AWS account
+- (Optional) Configure AWS SES for email verification
+- Replace tokens in terraform/terraform.tfvars
 - Open a shell in the terraform folder and execute
 ```
 terraform init

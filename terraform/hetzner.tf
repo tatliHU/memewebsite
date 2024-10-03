@@ -6,10 +6,16 @@ resource "hcloud_ssh_key" "web" {
 data "template_file" "cloud_init" {
   template = file("${path.module}/cloud-init.yaml")
   vars = {
-    username            = var.postgres.username
-    password            = var.postgres.password
-    session_encoder_key = var.session_encoder_key
-    domain              = var.domain
+    username              = var.postgres.username
+    password              = var.postgres.password
+    session_encoder_key   = var.session_encoder_key
+    aws_image_bucket      = aws_s3_bucket.images.id
+    aws_backup_bucket     = aws_s3_bucket.backups.id
+    aws_region            = var.aws.region
+    aws_access_key_id     = aws_iam_access_key.meme.id
+    aws_secret_access_key = aws_iam_access_key.meme.secret
+    sender_email          = var.sender_email
+    website_url           = "https://${var.domain}"
   }
 }
 

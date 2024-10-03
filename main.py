@@ -16,8 +16,8 @@ app.config['MAX_CONTENT_LENGTH'] = 8*1024*1024
 limiter = Limiter(get_remote_address, app=app, strategy="moving-window",
                   default_limits=["100 per minute", "5 per second"])
 
-app.config['AWS_REGION']    = os.getenv('AWS_REGION', 'bmeme-images')
-app.config['S3_BUCKET']     = os.getenv('S3_BUCKET', 'eu-north-1')
+app.config['AWS_REGION']    = os.getenv('AWS_REGION', 'eu-north-1')
+app.config['S3_BUCKET']     = os.getenv('S3_BUCKET', 'bmeme-images')
 app.config['SENDER_EMAIL']  = os.getenv('SENDER_EMAIL', 'sender@example.com')
 app.config['POSTGRES_HOST'] = os.getenv('POSTGRES_HOST', 'localhost')
 app.config['POSTGRES_PORT'] = os.getenv('POSTGRES_PORT', '5432')

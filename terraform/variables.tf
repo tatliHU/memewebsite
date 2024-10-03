@@ -1,5 +1,13 @@
 variable "hcloud_token" {
-  type = string
+    type = string
+}
+
+variable "aws" {
+    type = object({
+      region            = string
+      aws_access_key_id = string
+      secret_access_key = string
+    })
 }
 
 variable "ssh_public_key" {
@@ -38,7 +46,7 @@ variable "primary_ip" {
 
 variable "domain" {
     type = string
-    default = "http://bme.lol"
+    default = "bme.lol"
 }
 
 variable "postgres" {
@@ -51,4 +59,22 @@ variable "postgres" {
         password = "tatli"
     }
     description = "This user is automatically created and it owns the MEME DataBase"
+}
+
+variable "sender_email" {
+    type    = string
+    default = "bme.lol@protonmail.com"
+}
+
+variable "tags" {
+    type    = map(string)
+    default = {
+        Managed_By = "Terrafom"
+    }
+}
+
+variable "destroy_data" {
+    type = bool
+    default = false
+    description = "Setting this to true deletes all data on terraform destroy. Do not set to true on production."
 }

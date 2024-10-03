@@ -21,6 +21,12 @@ write_files:
       ExecStart=gunicorn -w 4 'main:app' -b 0.0.0.0:80
       User=root
       Environment="SESSION_KEY=${session_encoder_key}"
+      Environment="S3_BUCKET=${aws_image_bucket}"
+      Environment="SENDER_EMAIL=${sender_email}"
+      Environment="WEBSITE_URL=${website_url}"
+      Environment="AWS_REGION=${aws_region}"
+      Environment="AWS_ACCESS_KEY_ID=${aws_access_key_id}"
+      Environment="AWS_SECRET_ACCESS_KEY=${aws_secret_access_key}"
   - path: /tmp/db_init.sql
     content: | 
       CREATE USER ${username} WITH PASSWORD '${password}';
@@ -31,7 +37,7 @@ write_files:
           username VARCHAR(25) NOT NULL,
           password VARCHAR(32) NOT NULL,
           email VARCHAR(50) NOT NULL,
-          admin BOOLEAN,
+          admin BOOLEAN DEFAULT false,
           PRIMARY KEY (username)
       );
 
@@ -42,15 +48,16 @@ write_files:
           published INT NOT NULL,
           username VARCHAR(25) NOT NULL,
           approver VARCHAR(25),
-          tag_all BOOLEAN,
-          tag_emk BOOLEAN,
-          tag_gpk BOOLEAN,
-          tag_epk BOOLEAN,
-          tag_vbk BOOLEAN,
-          tag_vik BOOLEAN,
-          tag_kjk BOOLEAN,
-          tag_ttk BOOLEAN,
-          tag_gtk BOOLEAN,
+          approved BOOLEAN,
+          tag_all BOOLEAN DEFAULT false,
+          tag_emk BOOLEAN DEFAULT false,
+          tag_gpk BOOLEAN DEFAULT false,
+          tag_epk BOOLEAN DEFAULT false,
+          tag_vbk BOOLEAN DEFAULT false,
+          tag_vik BOOLEAN DEFAULT false,
+          tag_kjk BOOLEAN DEFAULT false,
+          tag_ttk BOOLEAN DEFAULT false,
+          tag_gtk BOOLEAN DEFAULT false,
           FOREIGN KEY (username) REFERENCES users(username),
           FOREIGN KEY (approver) REFERENCES users(username),
         PRIMARY KEY (post_id)
@@ -72,9 +79,41 @@ write_files:
           Created INT NOT NULL,
           PRIMARY KEY (email)
       );
+  - path: /etc/backup-script.sh
+    permissions: '0755'
+    content: |
+      #!/bin/bash
+      mkdir -p /tmp/dump
+      dumpfile=/tmp/dump/$(date +"%F-%H-%M-%S").tar
+      pg_dump meme --format=tar --file=$dumpfile
+      aws s3 cp $dumpfile s3://${aws_backup_bucket}
+      rm -R /tmp/dump
+  - path: /etc/systemd/system/backup.service
+    content: |
+      [Unit]
+      Description=Backup service
+      [Service]
+      Type=oneshot
+      ExecStart=/etc/backup-script.sh
+      User=postgres
+      Environment="AWS_REGION=${aws_region}"
+      Environment="AWS_ACCESS_KEY_ID=${aws_access_key_id}"
+      Environment="AWS_SECRET_ACCESS_KEY=${aws_secret_access_key}"
+  - path: /etc/systemd/system/backup.timer
+    content: |
+      [Unit]
+      Description=Backup timer
+      [Timer]
+      OnCalendar=daily
+      Persistent=true
+      [Install]
+      WantedBy=timers.target
 
 runcmd:
   - apt-get update
+  - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  - unzip awscliv2.zip
+  - ./aws/install
   - DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends postgresql-16
   #- sudo -u postgres psql -c "CREATE USER ${username} WITH PASSWORD '${password}';"
   #- sudo -u postgres psql -c "CREATE DATABASE meme WITH OWNER ${username};"
@@ -90,3 +129,4 @@ package_update: true
 package_upgrade: true
 packages:
   - git
+  - unzip
