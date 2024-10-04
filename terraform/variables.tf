@@ -78,3 +78,8 @@ variable "destroy_data" {
     default = false
     description = "Setting this to true deletes all data on terraform destroy. Do not set to true on production."
 }
+
+variable "debug" {
+    type    = bool
+    default = false
+}

@@ -16,6 +16,7 @@ data "template_file" "cloud_init" {
     aws_secret_access_key = aws_iam_access_key.meme.secret
     sender_email          = var.sender_email
     website_url           = "https://${var.domain}"
+    debug                 = var.debug ? "True" : "False"
   }
 }
 
