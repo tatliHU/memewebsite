@@ -32,6 +32,10 @@ resource "aws_s3_bucket_policy" "public_access_images" {
       },
      ]
   })
+  depends_on = [
+    aws_s3_bucket_public_access_block.images,
+    aws_s3_bucket_ownership_controls.images
+  ]
 }
 
 resource "aws_s3_bucket" "backups" {
@@ -82,6 +86,30 @@ resource "aws_iam_policy" "write_s3_buckets" {
 }
 
 resource "aws_iam_user_policy_attachment" "meme_user_write_s3_buckets" {
-  user       = "meme"
+  user       = aws_iam_user.meme.name
   policy_arn = aws_iam_policy.write_s3_buckets.arn
+}
+
+resource "aws_iam_policy" "ses_send_email_policy" {
+  name        = "SESSendEmailPolicy"
+  description = "Allows sending emails using AWS SES"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = [
+          "ses:SendEmail",
+          "ses:SendRawEmail"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_user_policy_attachment" "attach_ses_policy_to_user" {
+  user       = aws_iam_user.meme.name
+  policy_arn = aws_iam_policy.ses_send_email_policy.arn
 }

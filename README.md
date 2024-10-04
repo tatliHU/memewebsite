@@ -45,9 +45,10 @@ URL (and optionally port) your website listens on. Example: https://mysite.com:5
 ## Remote setup with Terraform
 - Create a Hetzner account and a project
 - Create AWS account
-- (Optional) Configure AWS SES for email verification
 - Replace tokens in terraform/terraform.tfvars
 - Open a shell in the terraform folder and execute
+- (Optional for email verification) Configure AWS SES\
+Create identity and verify ownership of your domain and email. Request to be moved outisde the sandbox so you can send emails to any user.
 ```
 terraform init
 terraform apply

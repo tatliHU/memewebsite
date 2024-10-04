@@ -20,6 +20,8 @@ write_files:
       WorkingDirectory=/root/memewebsite
       ExecStart=gunicorn -w 4 'main:app' -b 0.0.0.0:80
       User=root
+      Environment="PGUSER=${username}"
+      Environment="PGPASSWORD=${password}"
       Environment="SESSION_KEY=${session_encoder_key}"
       Environment="S3_BUCKET=${aws_image_bucket}"
       Environment="SENDER_EMAIL=${sender_email}"
