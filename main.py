@@ -61,10 +61,6 @@ def search_endpoint():
 def upload_endpoint():
     return render_template('upload.html')
 
-@app.route("/debug", methods=['GET'])
-def debug_endpoint():
-    return send_from_directory(os.path.join(app.root_path, 'static'), 'debug.html')
-
 @app.route("/admin", methods=['GET'])
 def admin_endpoint():
     return render_template('index.html', func="admin", page=request.args.get('page', 1), voteEndpoint="approve")
@@ -106,7 +102,6 @@ def register_api_endpoint():
 @limiter.limit("3 per minute")
 def change_password_api_endpoint():
     if 'username' in session:
-        app.logger.debug(request.json)
         return change_password(session['username'], request.json['password'], app=app)
     else:
         return 'Login required', 401
