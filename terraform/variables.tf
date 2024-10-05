@@ -32,15 +32,9 @@ variable "instance_type" {
     description = "Hetzner VM size"
 }
 
-variable "primary_ip" {
-    type        = object({
-      meme = bool
-      wiki = bool
-    })
-    default = {
-      meme = false
-      wiki = false
-    }
+variable "primary_ip_name" {
+    type        = string
+    default     = ""
     description = "You can set up primary IPs if you want to keep the IPs even after destroying the env. The IP is charged regardless but you don't have update your DNS record"
 }
 

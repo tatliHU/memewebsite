@@ -47,7 +47,7 @@ def register(username, password, email, app):
         
         app.logger.debug("Sending email for verification")
         if send_email(email, uuid, app):
-            return 'Created', 201
+            return {'message': 'Please check your spam folder for the email verification'}, 201
         else:
             return 'An error occured while sending email', 500
 

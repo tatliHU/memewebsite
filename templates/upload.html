@@ -129,6 +129,7 @@
         })
         .then(response => {
             if (response.status === 201) {
+                alert('Your meme is waiting for approval')
                 window.location.href = '/';
             } else {
                 return response.json().then(data => {

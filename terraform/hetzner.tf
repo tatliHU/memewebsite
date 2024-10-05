@@ -21,8 +21,8 @@ data "template_file" "cloud_init" {
 }
 
 data "hcloud_primary_ip" "meme" {
-  count = var.primary_ip.meme ? 1 : 0
-  name  = "meme"
+  count = var.primary_ip_name=="" ? 0 : 1
+  name  = var.primary_ip_name
 }
 
 resource "hcloud_server" "web" {
@@ -33,7 +33,7 @@ resource "hcloud_server" "web" {
   user_data = base64encode(data.template_file.cloud_init.rendered)
   public_net {
     ipv4_enabled = true
-    ipv4         = var.primary_ip.meme ? data.hcloud_primary_ip.meme[0].id : null
+    ipv4         = var.primary_ip_name=="" ? null : data.hcloud_primary_ip.meme[0].id
     ipv6_enabled = false
   }
   ssh_keys = [hcloud_ssh_key.web.id]
