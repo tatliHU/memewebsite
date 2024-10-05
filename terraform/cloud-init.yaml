@@ -20,8 +20,6 @@ write_files:
       WorkingDirectory=/root/memewebsite
       ExecStart=gunicorn -w 4 'main:app' -b 0.0.0.0:80
       User=root
-      Environment="PGUSER=${username}"
-      Environment="PGPASSWORD=${password}"
       Environment="SESSION_KEY=${session_encoder_key}"
       Environment="S3_BUCKET=${aws_image_bucket}"
       Environment="SENDER_EMAIL=${sender_email}"
@@ -82,6 +80,11 @@ write_files:
           Created INT NOT NULL,
           PRIMARY KEY (email)
       );
+      GRANT ALL PRIVILEGES ON TABLE users TO ${username};
+      GRANT ALL PRIVILEGES ON TABLE posts TO ${username};
+      GRANT ALL PRIVILEGES ON TABLE votes TO ${username};
+      GRANT ALL PRIVILEGES ON TABLE pending_registrations TO ${username};
+      GRANT USAGE, SELECT, UPDATE ON SEQUENCE posts_post_id_seq TO ${username};
   - path: /etc/backup-script.sh
     permissions: '0755'
     content: |
@@ -118,9 +121,9 @@ runcmd:
   - unzip awscliv2.zip
   - ./aws/install
   - DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends postgresql-16
-  #- sudo -u postgres psql -c "CREATE USER ${username} WITH PASSWORD '${password}';"
-  #- sudo -u postgres psql -c "CREATE DATABASE meme WITH OWNER ${username};"
   - sudo -u postgres psql -f /tmp/db_init.sql
+  - echo "host meme ${username} 127.0.0.1/32 scram-sha-256" >> /etc/postgresql/16/main/pg_hba.conf
+  - sudo -u postgres psql -c "SELECT pg_reload_conf();"
 
   - apt-get -y install pip python3-flask python3-flask-limiter python3-psycopg2 python3-boto3 python3-gunicorn gunicorn
   - cd /root && git clone https://github.com/tatliHU/memewebsite.git

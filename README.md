@@ -114,4 +114,10 @@ CREATE TABLE pending_registrations (
     Created INT NOT NULL,
     PRIMARY KEY (email)
 );
+
+GRANT ALL PRIVILEGES ON TABLE users TO atka;
+GRANT ALL PRIVILEGES ON TABLE posts TO atka;
+GRANT ALL PRIVILEGES ON TABLE votes TO atka;
+GRANT ALL PRIVILEGES ON TABLE pending_registrations TO atka;
+GRANT USAGE, SELECT, UPDATE ON SEQUENCE posts_post_id_seq TO atka;
 ```

@@ -41,7 +41,7 @@ def upload(image, title, tags, username, app):
         '''
         values = (
             title,
-            f"https://{app.config['AWS_REGION']}.s3.{app.config['S3_BUCKET']}.amazonaws.com/{id}.{file_format}",
+            f"https://{app.config['S3_BUCKET']}.s3.{app.config['AWS_REGION']}.amazonaws.com/{id}.{file_format}",
             int(round(time.time())),
             username,
             tags_dict['tag_all'], tags_dict['tag_emk'], tags_dict['tag_gpk'],
@@ -65,7 +65,7 @@ def upload(image, title, tags, username, app):
     try:
         app.logger.debug("Uploading file to S3")
         s3_client = boto3.client('s3')
-        s3_client.upload_fileobj(image, 'bmeme-images', f"{id}.{file_format}",
+        s3_client.upload_fileobj(image, app.config['S3_BUCKET'], f"{id}.{file_format}",
                                  ExtraArgs={'ContentType': image.content_type, 'ACL': 'public-read'})
         return 'Created', 201
     except Exception as e:
