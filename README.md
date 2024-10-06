@@ -10,7 +10,10 @@ Multi-cloud meme website designed to opearate on ultra-low infra budget.
 - Automatic certificate creation and renewal with Let's encrypt
 
 ## Backend stack:
+- Python
 - Flask
+- Gunicorn
+- HAproxy
 - Postgresql-16
 - AWS S3
 - Hetzner Cloud Server

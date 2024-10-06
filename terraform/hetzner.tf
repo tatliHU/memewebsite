@@ -15,7 +15,8 @@ data "template_file" "cloud_init" {
     aws_access_key_id     = aws_iam_access_key.meme.id
     aws_secret_access_key = aws_iam_access_key.meme.secret
     sender_email          = var.sender_email
-    website_url           = "https://${var.domain}"
+    contact_email         = var.contact_email
+    domain                = var.domain
     debug                 = var.debug ? "True" : "False"
   }
 }
@@ -50,6 +51,12 @@ resource "hcloud_firewall" "web" {
     direction = "in"
     protocol  = "tcp"
     port      = "80"
+    source_ips = ["0.0.0.0/0"]
+  }
+  rule {
+    direction = "in"
+    protocol  = "tcp"
+    port      = "443"
     source_ips = ["0.0.0.0/0"]
   }
   rule {

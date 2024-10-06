@@ -60,6 +60,11 @@ variable "sender_email" {
     default = "bme.lol@protonmail.com"
 }
 
+variable "contact_email" {
+    type    = string
+    default = "bme.lol@protonmail.com"
+}
+
 variable "tags" {
     type    = map(string)
     default = {
