@@ -110,9 +110,15 @@ function submitLogin() {
 }
 
 function submitRegister() {
+    const checkbox = document.getElementById('data-policy-checkbox');
     const username = document.getElementById('register-username').value;
     const password = document.getElementById('register-password').value;
     const email = document.getElementById('register-email').value;
+    
+    if (!checkbox.checked) {
+        alert('You must accept the data policy to register.');
+        return;
+    }
 
     fetch('/api/register', {
         method: 'POST',

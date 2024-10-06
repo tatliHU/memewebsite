@@ -82,6 +82,10 @@ def css_endpoint():
 def robots_endpoint():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'robots.txt')
 
+@app.route("/gdpr.pdf", methods=['GET'])
+def gdpr_endpoint():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'gdpr.pdf')
+
 # api
 @app.route("/api/login", methods=['POST'])
 @limiter.limit("10 per minute")
