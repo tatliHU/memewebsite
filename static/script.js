@@ -170,13 +170,21 @@ function loadPageSelector(func, page) {
     }
 }
 
-function init(logged_in) {
+function showProfile(logged_in) {
     var profile = document.getElementById('profileMenu');
+    var loginForm = document.getElementById('formContainer');
     
     if (logged_in=='True') {
         profile.style.display = '';
+        loginForm.style.display = 'none';
     } 
     else {
         profile.style.display = 'none';
+        loginForm.style.display = '';
     }
+}
+
+function init(func, page, logged_in) {
+    loadPageSelector(func, page)
+    showProfile(logged_in)
 }

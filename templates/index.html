@@ -40,56 +40,58 @@
             });
         </script>
         
-        <div class="form-container">
-            <div class="tab-buttons">
-                <button id="loginTab" class="active" onclick="showLoginForm('login')">Login</button>
-                <button id="registerTab" onclick="showLoginForm('register')">Register</button>
-            </div>
+        <div class="sidebar">
+            <div id="formContainer">
+                <div class="tab-buttons">
+                    <button id="loginTab" class="active" onclick="showLoginForm('login')">Login</button>
+                    <button id="registerTab" onclick="showLoginForm('register')">Register</button>
+                </div>
 
-            <div id="loginForm" class="form-content active">
-                <h2>Login</h2>
-                <form>
-                    <div class="form-group">
-                        <label for="login-username">Username:</label>
-                        <input type="text" id="login-username" name="username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="login-password">Password:</label>
-                        <input type="password" id="login-password" name="password" required>
-                    </div>
-                    <div class="form-group">
-                        <button type="button" onclick="submitLogin()">Login</button>
-                    </div>
-                </form>
-            </div>
+                <div id="loginForm" class="form-content active">
+                    <h2>Login</h2>
+                    <form>
+                        <div class="form-group">
+                            <label for="login-username">Username:</label>
+                            <input type="text" id="login-username" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Password:</label>
+                            <input type="password" id="login-password" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" onclick="submitLogin()">Login</button>
+                        </div>
+                    </form>
+                </div>
 
-            <div id="registerForm" class="form-content">
-                <h2>Register</h2>
-                <form action="/api/register" method="POST">
-                    <div class="form-group">
-                        <label for="register-username">Username:</label>
-                        <input type="text" id="register-username" name="username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="register-email">Email:</label>
-                        <input type="email" id="register-email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="register-password">Password:</label>
-                        <input type="password" id="register-password" name="password" required>
-                    </div>
-                    <div class="form-group">
-                        <button type="button" onclick="submitRegister()">Register</button>
-                    </div>
-                    <div class="form-group">
-                        <input type="checkbox" id="data-policy-checkbox" name="data-policy-checkbox" required>
-                        <label for="data-policy-checkbox">
-                            Elfogadom az <a href="/gdpr.pdf" target="_blank">Adatkezelési tájékoztatót</a>.
-                        </label>
-                    </div>
-                </form>
+                <div id="registerForm" class="form-content">
+                    <h2>Register</h2>
+                    <form action="/api/register" method="POST">
+                        <div class="form-group">
+                            <label for="register-username">Username:</label>
+                            <input type="text" id="register-username" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-email">Email:</label>
+                            <input type="email" id="register-email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Password:</label>
+                            <input type="password" id="register-password" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" onclick="submitRegister()">Register</button>
+                        </div>
+                        <div class="form-group">
+                            <input type="checkbox" id="data-policy-checkbox" name="data-policy-checkbox" required>
+                            <label for="data-policy-checkbox">
+                                Elfogadom az <a href="/gdpr.pdf" target="_blank">Adatkezelési tájékoztatót</a>.
+                            </label>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div>
+            <div class="form-container">
                 <p>Üdv a mémoldalamon!</p>
                 <p>
                     A <a href="https://bmeme.hu">bmeme</a> bezárt, de lesz másik. Folyamatosan fejlesztem az oldalt, de jól jönne kis segítség.
@@ -108,10 +110,7 @@
             </div>
         </div>
     </div>
-    <div id="pageSelector">
-        <script src="script.js"></script>
-        <script>loadPageSelector('{{func}}', '{{page}}');</script>
-    </div>
-    <script>window.onload = init('{{logged_in}}')</script>
+    <div id="pageSelector"></div>
+    <script>window.onload = init('{{func}}', '{{page}}', '{{logged_in}}')</script>
 </body>
 </html>
