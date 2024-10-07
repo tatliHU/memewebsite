@@ -1,4 +1,5 @@
 import psycopg2
+import hashlib
 
 def change_password(username, password, app):
     try:
@@ -13,8 +14,9 @@ def change_password(username, password, app):
         app.logger.debug("DB connection opened")
         
         app.logger.debug("Changing password")
+        password_hash = hashlib.md5((password+app.config['SALT']).encode()).hexdigest()
         password_change_sql = "UPDATE users SET password=%s WHERE username=%s;"
-        cursor.execute(password_change_sql, (password, username,))
+        cursor.execute(password_change_sql, (password_hash, username,))
         connection.commit()
 
         return 'Password updated', 200

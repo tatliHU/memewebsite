@@ -1,6 +1,7 @@
 import base64
 import psycopg2
 import flask
+import hashlib
 
 def login(authorization, app):
     try:
@@ -23,7 +24,8 @@ def login(authorization, app):
         app.logger.debug("DB connection opened")
         
         app.logger.debug("Authorizing")
-        if get_password(username, app)==password:
+        password_hash = hashlib.md5((password+app.config['SALT']).encode()).hexdigest()
+        if get_password(username, app)==password_hash:
             flask.session['username'] = username
             return {'message': 'Welcome '+username}, 200
         else:

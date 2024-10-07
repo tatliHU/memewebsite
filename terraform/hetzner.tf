@@ -17,6 +17,7 @@ data "template_file" "cloud_init" {
     sender_email          = var.sender_email
     contact_email         = var.contact_email
     domain                = var.domain
+    salt                  = var.salt
     debug                 = var.debug ? "True" : "False"
   }
 }
@@ -47,6 +48,7 @@ resource "hcloud_firewall" "web" {
     protocol  = "icmp"
     source_ips = ["0.0.0.0/0"]
   }
+  # needs to be open for Let's encrypt SSL certificate generation
   rule {
     direction = "in"
     protocol  = "tcp"

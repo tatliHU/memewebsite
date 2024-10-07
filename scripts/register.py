@@ -3,6 +3,7 @@ from uuid import uuid4
 import time
 import boto3
 from botocore.exceptions import ClientError
+import hashlib
 
 def register(username, password, email, app):
     try:
@@ -42,7 +43,8 @@ def register(username, password, email, app):
             INSERT INTO pending_registrations (username, password, email, uuid, created)
             VALUES (%s, %s, %s, %s, %s);
         '''
-        cursor.execute(create_registration_sql, (username, password, email, uuid, int(round(time.time())),))
+        password_hash = hashlib.md5((password+app.config['SALT']).encode()).hexdigest()
+        cursor.execute(create_registration_sql, (username, password_hash, email, uuid, int(round(time.time())),))
         connection.commit()
         
         app.logger.debug("Sending email for verification")

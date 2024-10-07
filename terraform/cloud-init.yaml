@@ -31,6 +31,7 @@ write_files:
       Environment="AWS_DEFAULT_REGION=${aws_region}"
       Environment="AWS_ACCESS_KEY_ID=${aws_access_key_id}"
       Environment="AWS_SECRET_ACCESS_KEY=${aws_secret_access_key}"
+      Environment="SALT=${salt}"
       Environment="DEBUG=${debug}"
   - path: /tmp/db_init.sql
     content: | 

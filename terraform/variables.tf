@@ -73,9 +73,15 @@ variable "tags" {
 }
 
 variable "destroy_data" {
-    type = bool
-    default = false
+    type        = bool
+    default     = false
     description = "Setting this to true deletes all data on terraform destroy. Do not set to true on production."
+}
+
+variable "salt" {
+    type        = string
+    default     = "changeme"
+    description = "Password hash salt. Change it for security."
 }
 
 variable "debug" {

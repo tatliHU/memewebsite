@@ -25,6 +25,7 @@ app.config['POSTGRES_DB']   = os.getenv('POSTGRES_DB', 'meme')
 app.config['POSTGRES_USER'] = os.getenv('POSTGRES_USER', 'atka')
 app.config['POSTGRES_PASS'] = os.getenv('POSTGRES_PASS', 'atka')
 app.config['WEBSITE_URL']   = os.getenv('WEBSITE_URL', 'http://localhost:5000')
+app.config['SALT']          = os.getenv('SALT', 'mysalt')
 app.config['DEBUG']         = os.getenv('DEBUG', False)
 
 @app.route("/")
