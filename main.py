@@ -33,19 +33,43 @@ def index():
 
 @app.route("/fresh", methods=['GET'])
 def fresh_endpoint():
-    return render_template('index.html', func="fresh", page=request.args.get('page', 1), voteEndpoint="vote")
+    return render_template(
+        'index.html',
+        func="fresh",
+        page=request.args.get('page', 1),
+        voteEndpoint="vote",
+        logged_in='username' in session
+    )
 
 @app.route("/top", methods=['GET'])
 def top_endpoint():
-    return render_template('index.html', func="top", page=request.args.get('page', 1), voteEndpoint="vote")
+    return render_template(
+        'index.html',
+        func="top",
+        page=request.args.get('page', 1),
+        voteEndpoint="vote",
+        logged_in='username' in session
+    )
 
 @app.route("/trash", methods=['GET'])
 def trash_endpoint():
-    return render_template('index.html', func="trash", page=request.args.get('page', 1), voteEndpoint="vote")
+    return render_template(
+        'index.html',
+        func="trash",
+        page=request.args.get('page', 1),
+        voteEndpoint="vote",
+        logged_in='username' in session
+    )
 
 @app.route("/random", methods=['GET'])
 def random_endpoint():
-    return render_template('index.html', func="random", page=request.args.get('page', 1), voteEndpoint="vote")
+    return render_template(
+        'index.html',
+        func="random",
+        page=request.args.get('page', 1),
+        voteEndpoint="vote",
+        logged_in='username' in session
+    )
 
 @app.route("/search", methods=['GET'])
 def search_endpoint():
@@ -54,7 +78,8 @@ def search_endpoint():
         func="search",
         page=request.args.get('page', 1),
         query="title="+request.args.get('title'),
-        voteEndpoint="vote"
+        voteEndpoint="vote",
+        logged_in='username' in session
     )
 
 @app.route("/upload", methods=['GET'])
@@ -63,7 +88,13 @@ def upload_endpoint():
 
 @app.route("/admin", methods=['GET'])
 def admin_endpoint():
-    return render_template('index.html', func="admin", page=request.args.get('page', 1), voteEndpoint="approve")
+    return render_template(
+        'index.html',
+        func="admin",
+        page=request.args.get('page', 1),
+        voteEndpoint="approve",
+        logged_in='username' in session
+    )
 
 # static files
 @app.route("/favicon.ico", methods=['GET'])
@@ -86,6 +117,10 @@ def robots_endpoint():
 def gdpr_endpoint():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'gdpr.pdf')
 
+@app.route("/profile.png", methods=['GET'])
+def profile_endpoint():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'profile.png')
+
 # api
 @app.route("/api/login", methods=['POST'])
 @limiter.limit("10 per minute")
@@ -95,7 +130,7 @@ def login_api_endpoint():
 @app.route('/api/logout')
 def logout_api_endpoint():
     session.pop('username', None)
-    return 'Logged out', 200
+    return redirect("/")
 
 @app.route("/api/register", methods=['POST'])
 @limiter.limit("3 per minute")

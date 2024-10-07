@@ -169,3 +169,14 @@ function loadPageSelector(func, page) {
         pageSelector.appendChild(pageButton);
     }
 }
+
+function init(logged_in) {
+    var profile = document.getElementById('profileMenu');
+    
+    if (logged_in=='True') {
+        profile.style.display = '';
+    } 
+    else {
+        profile.style.display = 'none';
+    }
+}

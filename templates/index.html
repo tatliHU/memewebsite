@@ -19,6 +19,12 @@
                 <input type="text" name="title" placeholder="Search" value="">
             </form>
         </ul>
+        <div class="dropdown" id="profileMenu">
+            <img src="profile.png" alt="Profile Image">
+            <div class="dropdown-content">
+                <a href="/api/logout">Logout</a>
+            </div>
+        </div>
     </div>
     <div class="container">
         <div class="gallery" id="gallery"></div>
@@ -106,5 +112,6 @@
         <script src="script.js"></script>
         <script>loadPageSelector('{{func}}', '{{page}}');</script>
     </div>
+    <script>window.onload = init('{{logged_in}}')</script>
 </body>
 </html>
