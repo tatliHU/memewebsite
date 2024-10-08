@@ -39,7 +39,7 @@ def fresh_endpoint():
         func="fresh",
         page=request.args.get('page', 1),
         voteEndpoint="vote",
-        logged_in='username' in session
+        username=session['username'] if 'username' in session else ''
     )
 
 @app.route("/top", methods=['GET'])
@@ -49,7 +49,7 @@ def top_endpoint():
         func="top",
         page=request.args.get('page', 1),
         voteEndpoint="vote",
-        logged_in='username' in session
+        username=session['username'] if 'username' in session else ''
     )
 
 @app.route("/trash", methods=['GET'])
@@ -59,7 +59,7 @@ def trash_endpoint():
         func="trash",
         page=request.args.get('page', 1),
         voteEndpoint="vote",
-        logged_in='username' in session
+        username=session['username'] if 'username' in session else ''
     )
 
 @app.route("/random", methods=['GET'])
@@ -69,7 +69,7 @@ def random_endpoint():
         func="random",
         page=request.args.get('page', 1),
         voteEndpoint="vote",
-        logged_in='username' in session
+        username=session['username'] if 'username' in session else ''
     )
 
 @app.route("/search", methods=['GET'])
@@ -80,12 +80,12 @@ def search_endpoint():
         page=request.args.get('page', 1),
         query="title="+request.args.get('title'),
         voteEndpoint="vote",
-        logged_in='username' in session
+        username=session['username'] if 'username' in session else ''
     )
 
 @app.route("/upload", methods=['GET'])
 def upload_endpoint():
-    return render_template('upload.html', logged_in='username' in session)
+    return render_template('upload.html', username=session['username'] if 'username' in session else '')
 
 @app.route("/admin", methods=['GET'])
 def admin_endpoint():
@@ -94,7 +94,7 @@ def admin_endpoint():
         func="admin",
         page=request.args.get('page', 1),
         voteEndpoint="approve",
-        logged_in='username' in session
+        username=session['username'] if 'username' in session else ''
     )
 
 # static files

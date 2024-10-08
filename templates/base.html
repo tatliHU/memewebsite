@@ -20,7 +20,10 @@
             </form>
         </ul>
         <div class="dropdown" id="profileMenu">
-            <img src="profile.png" alt="Profile Image">
+            <div class="profile-container">
+                <span class="username" id="username"></span>
+                <img src="profile.png" alt="Profile Image">
+            </div>
             <div class="dropdown-content">
                 <a href="/api/logout">Logout</a>
             </div>
@@ -101,6 +104,6 @@
         </div>
     </div>
     <div id="pageSelector"></div>
-    <script>window.onload = init('{{func}}', '{{page}}', '{{logged_in}}')</script>
+    <script>window.onload = init('{{func}}', '{{page}}', '{{username}}')</script>
 </body>
 </html>

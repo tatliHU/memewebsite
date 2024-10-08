@@ -171,21 +171,23 @@ function loadPageSelector(func, page) {
     }
 }
 
-function showProfile(logged_in) {
+function showProfile(username) {
     var profile = document.getElementById('profileMenu');
+    var usernameSpan = document.getElementById('username');
     var loginForm = document.getElementById('formContainer');
     
-    if (logged_in=='True') {
-        profile.style.display = '';
-        loginForm.style.display = 'none';
-    } 
-    else {
+    if (username=='') {
         profile.style.display = 'none';
         loginForm.style.display = '';
+    } 
+    else {
+        profile.style.display = '';
+        loginForm.style.display = 'none';
+        usernameSpan.textContent = username;
     }
 }
 
-function init(func, page, logged_in) {
+function init(func, page, username) {
     loadPageSelector(func, page)
-    showProfile(logged_in)
+    showProfile(username)
 }
