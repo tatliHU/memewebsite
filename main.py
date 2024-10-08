@@ -85,7 +85,7 @@ def search_endpoint():
 
 @app.route("/upload", methods=['GET'])
 def upload_endpoint():
-    return render_template('upload.html')
+    return render_template('upload.html', logged_in='username' in session)
 
 @app.route("/admin", methods=['GET'])
 def admin_endpoint():

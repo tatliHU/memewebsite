@@ -1,114 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOL</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        .upload-container {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+{% extends 'base.html' %}
 
-        h2 {
-            text-align: center;
-            color: #333;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .form-group input[type="text"],
-        .form-group input[type="file"],
-        .form-group select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        .form-group select {
-            height: 100px;
-            overflow-y: auto;
-        }
-
-        .form-group button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            background-color: #28a745;
-            color: white;
-            font-weight: bold;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .form-group button:hover {
-            background-color: #218838;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">Mémoldal</div>
-    <div class="navbar">
-        <ul class="menu">
-            <li><a href="/fresh">Újdonságok</a></li>
-            <li><a href="/top">Toplista</a></li>
-            <li><a href="/trash">Kuka</a></li>
-            <li><a href="/random">Random</a></li>
-            <li><a href="/upload">Feltöltés</a></li>
-            <form id="search-input" action="/search" method="GET"></form>
-                <input type="text" name="title" placeholder="Search" value="">
-            </form>
-        </ul>
-    </div>
-    <div class="upload-container">
-        <h2>Töltsd fel a saját mémed</h2>
-        <form id="uploadForm" onsubmit="return handleFormSubmit(event)" method="POST" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="image">Válassz képet:</label>
-                <input type="file" id="image" name="image" accept="image/*" required>
-            </div>
-            <div class="form-group">
-                <label for="title">Adj címet:</label>
-                <input type="text" id="title" name="title" placeholder="Enter image title" required>
-            </div>
-            <div class="form-group">
-                <label for="tags">Adj cimkéket:</label>
-                <select id="tags" name="tags[]" multiple required>
-                    <option value="tag_all">ALL</option>
-                    <option value="tag_emk">ÉMK</option>
-                    <option value="tag_gpk">GPK</option>
-                    <option value="tag_epk">ÉPK</option>
-                    <option value="tag_vbk">VBK</option>
-                    <option value="tag_vik">VIK</option>
-                    <option value="tag_kjk">KJK</option>
-                    <option value="tag_ttk">TTK</option>
-                    <option value="tag_gtk">GTK</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <button type="submit">Feltöltés</button>
-            </div>
-        </form>
-    </div>
-
+{% block content %}
+<div class="upload-container">
+    <h2>Töltsd fel a saját mémed</h2>
+    <form id="uploadForm" onsubmit="return handleFormSubmit(event)" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="image">Válassz képet:</label>
+            <input type="file" id="image" name="image" accept="image/*" required>
+        </div>
+        <div class="form-group">
+            <label for="title">Adj címet:</label>
+            <input type="text" id="title" name="title" placeholder="Enter image title" required>
+        </div>
+        <div class="form-group">
+            <label for="tags">Adj cimkéket:</label>
+            <select id="tags" name="tags[]" multiple required>
+                <option value="tag_all">ALL</option>
+                <option value="tag_emk">ÉMK</option>
+                <option value="tag_gpk">GPK</option>
+                <option value="tag_epk">ÉPK</option>
+                <option value="tag_vbk">VBK</option>
+                <option value="tag_vik">VIK</option>
+                <option value="tag_kjk">KJK</option>
+                <option value="tag_ttk">TTK</option>
+                <option value="tag_gtk">GTK</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <button type="submit">Feltöltés</button>
+        </div>
+    </form>
+</div>
+<script src="script.js"></script>
 <script>
     const searchForm = document.getElementById('search-input');
     searchForm.addEventListener('keydown', function(event) {
@@ -145,5 +68,4 @@
         return false;  // Ensure the form doesn't try to submit the usual way
     }
 </script>
-</body>
-</html>
+{% endblock %}

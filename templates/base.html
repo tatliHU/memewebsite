@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOL</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">Mémoldal</div>
+    <div class="navbar">
+        <ul class="menu">
+            <li><a href="/fresh">Újdonságok</a></li>
+            <li><a href="/top">Toplista</a></li>
+            <li><a href="/trash">Kuka</a></li>
+            <li><a href="/random">Random</a></li>
+            <li><a href="/upload">Feltöltés</a></li>
+            <form id="search-input" action="/search" method="GET">
+                <input type="text" name="title" placeholder="Search" value="">
+            </form>
+        </ul>
+        <div class="dropdown" id="profileMenu">
+            <img src="profile.png" alt="Profile Image">
+            <div class="dropdown-content">
+                <a href="/api/logout">Logout</a>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        {% block content %}
+        <!-- Page specific content goes here -->
+        {% endblock %}
+        <div class="sidebar">
+            <div id="formContainer">
+                <div class="tab-buttons">
+                    <button id="loginTab" class="active" onclick="showLoginForm('login')">Login</button>
+                    <button id="registerTab" onclick="showLoginForm('register')">Register</button>
+                </div>
+
+                <div id="loginForm" class="form-content active">
+                    <h2>Login</h2>
+                    <form>
+                        <div class="form-group">
+                            <label for="login-username">Username:</label>
+                            <input type="text" id="login-username" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Password:</label>
+                            <input type="password" id="login-password" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" onclick="submitLogin()">Login</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="registerForm" class="form-content">
+                    <h2>Register</h2>
+                    <form action="/api/register" method="POST">
+                        <div class="form-group">
+                            <label for="register-username">Username:</label>
+                            <input type="text" id="register-username" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-email">Email:</label>
+                            <input type="email" id="register-email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Password:</label>
+                            <input type="password" id="register-password" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" onclick="submitRegister()">Register</button>
+                        </div>
+                        <div class="form-group">
+                            <input type="checkbox" id="data-policy-checkbox" name="data-policy-checkbox" required>
+                            <label for="data-policy-checkbox">
+                                Elfogadom az <a href="/gdpr.pdf" target="_blank">Adatkezelési tájékoztatót</a>.
+                            </label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="form-container">
+                <p>Üdv a mémoldalamon!</p>
+                <p>
+                    A <a href="https://bmeme.hu">bmeme</a> bezárt, de lesz másik. Folyamatosan fejlesztem az oldalt, de jól jönne kis segítség.
+                    Ha szeretnél segíteni, ezekre van szükség:
+                    <ul>
+                        <li>webgányer</li>
+                        <li>Python "fejlesztő"</li>
+                        <li>grafikus</li>
+                        <li>lobbista</li>
+                        <li>mecénás</li>
+                    </ul>
+                    A forráskódot megtalálod a <a href="https://github.com/tatliHU/memewebsite">githubomon</a>
+                    Kapcsolat: torok.attila@protonmail.com
+                </p>
+                <p><b>U.I:</b> Nyugodtan törjétek fel az oldalt, de légyszi írjatok előtte, hogy készítsek backupot.</p>
+            </div>
+        </div>
+    </div>
+    <div id="pageSelector"></div>
+    <script>window.onload = init('{{func}}', '{{page}}', '{{logged_in}}')</script>
+</body>
+</html>

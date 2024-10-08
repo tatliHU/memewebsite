@@ -136,6 +136,7 @@ function submitRegister() {
     .then(data => {
         // Handle success
         console.log('Registration was successful', data);
+        alert('An email was sent with the profile verification link. Check your spam folder.')
         window.location.href = '/'; // Redirect on success
     })
     .catch(error => {
