@@ -2,7 +2,8 @@ body {
     font-family: Arial, sans-serif;
     font-size: calc(15px + 0.390625vw);
     background-color: #f0f0f0;
-    margin-bottom: 10;
+    margin: 0;
+    padding: 20px;
 }
 .container {
     display: flex;
@@ -13,7 +14,7 @@ body {
 }
 .gallery {
     display: grid;
-    flex-grow: 1;
+    flex: 1;
     grid-template-columns: repeat(1, 1fr);
     grid-template-rows: repeat(10, 1fr);
     gap: 10px;
@@ -160,13 +161,11 @@ body {
     border-radius: 4px;
 }
 .sidebar {
-    flex-basis: 20%; /* Set the sidebar to 20% of the container width */
-    max-width: 20%; /* Ensure it doesn't grow beyond 20% */
-    min-width: 100px;
     background-color: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 20%;
     box-sizing: border-box;
 }
 .tab-buttons {
