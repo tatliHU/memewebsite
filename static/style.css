@@ -1,5 +1,6 @@
 body {
     font-family: Arial, sans-serif;
+    font-size: calc(15px + 0.390625vw);
     background-color: #f0f0f0;
     margin: 0;
     padding: 20px;
@@ -17,7 +18,7 @@ body {
     grid-template-columns: repeat(1, 1fr);
     grid-template-rows: repeat(10, 1fr);
     gap: 10px;
-    max-width: 80%;
+    width: 80%;
     box-sizing: border-box;
 }
 .image-card {
@@ -31,7 +32,7 @@ body {
 }
 .image-card img {
     max-width: 100%;
-    max-height: 80vh;
+    max-height: 70vh;
     width: auto;
     margin-left: auto;
     margin-right: auto;
@@ -40,7 +41,6 @@ body {
 }
 .image-top {
     position: relative;
-    font-size: 18px;
     height: 40px;
     margin: 10px 0;
 }
@@ -49,7 +49,7 @@ body {
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
-    font-size: 1.2em;
+    font-size: 1.5rem;
     font-weight: bold;
     color: #333;
     text-decoration: none
@@ -64,6 +64,7 @@ body {
 .image-top span a {
     color: #888;
     text-decoration: none;
+    font-size: 1rem;
 }
 .voting-oval {
     display: flex;
@@ -127,6 +128,8 @@ body {
     margin-right: auto;
     max-width:100%;
     max-height:100%;
+    width: 30%;
+    object-fit: contain;
 }
 .navbar {
     display: flex;
@@ -156,14 +159,6 @@ body {
 .navbar .menu li a:hover {
     background-color: #720707;
     border-radius: 4px;
-}
-.header {
-    text-align: center;
-    background-color: #b02525;
-    color: white;
-    padding: 20px 0;
-    font-size: 24px;
-    font-weight: bold;
 }
 .sidebar {
     background-color: white;
