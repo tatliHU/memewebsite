@@ -3,6 +3,7 @@ body {
     font-size: calc(15px + 0.390625vw);
     background-color: #f0f0f0;
     margin-bottom: 5px;
+    margin: 0;
 }
 .container {
     display: flex;
@@ -15,7 +16,7 @@ body {
     display: grid;
     flex: 1;
     grid-template-columns: repeat(1, 1fr);
-    grid-template-rows: repeat(10, 1fr);
+    grid-template-rows: repeat(auto-fill, 1fr);
     gap: 10px;
     width: 80%;
     box-sizing: border-box;
@@ -364,4 +365,18 @@ h2 {
 
 * {
     overflow-wrap: break-word;
+}
+
+@media (max-width: 600px) {
+    .container {
+        flex-direction: column; /* Stack gallery and sidebar vertically */
+    }
+    .sidebar {
+        width: 100%; /* Full width for sidebar when stacked */
+        max-width: 100%;
+    }
+    .gallery {
+        width: 100%;
+        height: auto;
+    }
 }
