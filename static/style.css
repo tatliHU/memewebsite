@@ -2,8 +2,8 @@ body {
     font-family: Arial, sans-serif;
     font-size: calc(15px + 0.390625vw);
     background-color: #f0f0f0;
-    margin-bottom: 5px;
     margin: 0;
+    margin-bottom: 5px;
 }
 .container {
     display: flex;
@@ -45,8 +45,6 @@ body {
     margin: 10px 0;
 }
 .image-top a {
-    top: 10px;
-    left: 50%;
     transform: translateX(-50%);
     text-align: center;
     font-size: 1.5rem;
@@ -227,7 +225,7 @@ body {
 }
 #pageSelector {
     display: flex;
-    gap: 10px;
+    gap: 0.5vh;
     margin-top: 20px;
     justify-content: center;
 }
@@ -235,7 +233,7 @@ body {
     background-color: #28a745;
     color: white;
     border: none;
-    padding: 10px 15px;
+    padding: 10px 2.5vh;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -247,7 +245,7 @@ body {
     background-color: #b02525;
     color: white;
     border: none;
-    padding: 10px 15px;
+    padding: 10px 2.5vh;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
