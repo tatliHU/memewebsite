@@ -114,6 +114,20 @@ body {
     color: #28a745;
     text-decoration: none;
 }
+.logo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #b02525;
+    padding: 10px 20px;
+}
+.logo img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width:100%;
+    max-height:100%;
+}
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -121,19 +135,16 @@ body {
     background-color: #b02525;
     padding: 10px 20px;
 }
-.navbar img {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
 .navbar .menu {
     display: flex;
+    flex-wrap: wrap;
     list-style-type: none;
     margin: 0;
     padding: 0;
+    margin-right: 5px;
 }
-.navbar .menu li {
-    margin-right: 20px;
+.navbar .menu form {
+    margin-left: 12px;
 }
 .navbar .menu li a {
     text-decoration: none;
@@ -164,10 +175,12 @@ body {
 }
 .tab-buttons {
     display: flex;
+    flex-wrap: wrap;
     margin-bottom: 20px;
 }
 .tab-buttons button {
-    flex: 1;
+    flex: 1 1 auto;
+    min-width: 0;
     padding: 10px;
     cursor: pointer;
     border: none;
