@@ -76,6 +76,11 @@ body {
     background-color: #b02525;
     padding: 10px 20px;
 }
+.navbar img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
 .navbar .menu {
     display: flex;
     list-style-type: none;

@@ -122,6 +122,10 @@ def gdpr_endpoint():
 def profile_endpoint():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'profile.png')
 
+@app.route("/logo.png", methods=['GET'])
+def logo_endpoint():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'logo.png')
+
 # api
 @app.route("/api/login", methods=['POST'])
 @limiter.limit("10 per minute")
