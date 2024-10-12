@@ -38,36 +38,81 @@ body {
     border-radius: 8px;
     display: block;
 }
-.title {
+.image-top {
+    position: relative;
     font-size: 18px;
+    height: 40px;
     margin: 10px 0;
 }
-.tags {
+.image-top a {
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none
+}
+.image-top span {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 10px;
+}
+.image-top span a {
     color: #888;
-    margin: 10px 0;
+    text-decoration: none;
 }
-.voting {
-    display: block;
-    justify-content: space-around;
+.voting-oval {
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    margin-top: 10px;
+    background-color: #f0f0f0;
+    border-radius: 50px;
+    padding: 10px;
+    width: 200px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 5px auto;
 }
-.voting button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
+.voting-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+.vote-button {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin: auto 15px;
+    font-size: 1.5em;
+    color: #333;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s;
 }
-.voting button:hover {
-    background-color: #0056b3;
+.vote-button:hover {
+    background-color: #28a745;
 }
 .score {
-    font-size: 20px;
-    color: darkgreen;
-    width: 50px;
-    display: inline-block;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    flex-grow: 1;
+}
+.postername a {
+    font-size: 1em;
+    font-weight: bold;
+    color: #28a745;
+    text-decoration: none;
 }
 .navbar {
     display: flex;
@@ -179,7 +224,7 @@ body {
     justify-content: center;
 }
 .pagerButton {
-    background-color: #007bff;
+    background-color: #28a745;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -188,19 +233,16 @@ body {
     transition: background-color 0.3s ease;
 }
 .pagerButton:hover {
-    background-color: #0056b3;
+    background-color: #218838;
 }
 .pagerButtonCurrent {
-    background-color: #28a745;
+    background-color: #b02525;
     color: white;
     border: none;
     padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-}
-.pagerButtonCurrent:hover {
-    background-color: #28a745;
 }
 
 .profile-container {

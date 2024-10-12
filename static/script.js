@@ -15,7 +15,8 @@ function displayImages(images, voteEndpoint) {
     images.forEach(image => {
         let hrefs = '';
         image.tags.forEach(tag => {
-            const href = `<a href="/tag/${tag}">${tag}</a>`;
+            displayed_tag=tag.replace(/^tag_/, '').toUpperCase();
+            const href = `<a href="/tag/${tag}">${displayed_tag}</a>`;
             hrefs += href + '\n';
         });
         
@@ -23,15 +24,21 @@ function displayImages(images, voteEndpoint) {
         imageCard.className = 'image-card';
 
         imageCard.innerHTML = `
-            <div class="title">${image.title}</div>
-            <img src="${image.url}" alt="Unable to load image">
-            <div class="voting">
-                <button onclick="vote(${image.postid}, 1, '${voteEndpoint}')">Upvote</button>
-                <div class="score" id="score-${image.postid}">${image.score}</div>
-                <button onclick="vote(${image.postid}, -1, '${voteEndpoint}')">Downvote</button>
+            <div class="image-top">
+                <a>${image.title}</a>
+                <span>${hrefs}</span>
             </div>
-            <a href="/user/${image.username}">${image.username}</a>
-            <span>${hrefs}</span>
+            <img src="${image.url}" alt="Unable to load image">
+            <div class="voting-oval">
+                <div class="voting-controls">
+                    <button class="vote-button" onclick="vote(${image.postid}, 1, '${voteEndpoint}')">+</button>
+                    <div class="score" id="score-${image.postid}">${image.score}</div>
+                    <button class="vote-button" onclick="vote(${image.postid}, -1, '${voteEndpoint}')">-</button>
+                </div>
+                <div class="postername">
+                    <a href="/user/${image.username}">${image.username}</a>
+                </div>
+            </div>
         `;
 
         gallery.appendChild(imageCard);
