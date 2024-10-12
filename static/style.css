@@ -354,3 +354,7 @@ h2 {
 .form-group button:hover {
     background-color: #218838;
 }
+
+* {
+    overflow-wrap: break-word;
+}
