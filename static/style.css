@@ -2,8 +2,7 @@ body {
     font-family: Arial, sans-serif;
     font-size: calc(15px + 0.390625vw);
     background-color: #f0f0f0;
-    margin: 0;
-    padding: 20px;
+    margin-bottom: 5px;
 }
 .container {
     display: flex;
