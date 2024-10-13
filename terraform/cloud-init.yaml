@@ -25,7 +25,7 @@ write_files:
 
       Environment="SESSION_KEY=${session_encoder_key}"
       Environment="S3_BUCKET=${aws_image_bucket}"
-      Environment="SENDER_EMAIL=${sender_email}"
+      Environment="DOMAIN=${domain}"
       Environment="WEBSITE_URL=https://${domain}"
       Environment="AWS_REGION=${aws_region}"
       Environment="AWS_DEFAULT_REGION=${aws_region}"

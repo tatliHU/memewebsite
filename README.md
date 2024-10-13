@@ -29,8 +29,6 @@ Security feature for encoding cookies
 AWS region of your S3 bucket
 - S3_BUCKET\
 AWS S3 bucket name for storing the images
-- SENDER_EMAIL\
-Sender email mail configured in your Amazon SES for registration verification emails
 - POSTGRES_HOST\
 Your database server URL
 - POSTGRES_PORT\
@@ -41,6 +39,8 @@ Database to use
 User to connect to the database server
 - POSTGRES_PASS\
 Password to connect to your database server
+- DOMAIN\
+Your domain configured in your Amazon SES for registration verification emails
 - WEBSITE_URL\
 URL (and optionally port) your website listens on. Example: https://mysite.com:5000
 - AWS access related env vars

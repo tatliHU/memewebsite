@@ -55,11 +55,6 @@ variable "postgres" {
     description = "This user is automatically created and it owns the MEME DataBase"
 }
 
-variable "sender_email" {
-    type    = string
-    default = "bme.lol@protonmail.com"
-}
-
 variable "contact_email" {
     type    = string
     default = "bme.lol@protonmail.com"

@@ -18,12 +18,12 @@ limiter = Limiter(get_remote_address, app=app, strategy="moving-window",
 
 app.config['AWS_REGION']    = os.getenv('AWS_REGION', 'eu-north-1')
 app.config['S3_BUCKET']     = os.getenv('S3_BUCKET', 'bmeme-images')
-app.config['SENDER_EMAIL']  = os.getenv('SENDER_EMAIL', 'sender@example.com')
 app.config['POSTGRES_HOST'] = os.getenv('POSTGRES_HOST', 'localhost')
 app.config['POSTGRES_PORT'] = os.getenv('POSTGRES_PORT', '5432')
 app.config['POSTGRES_DB']   = os.getenv('POSTGRES_DB', 'meme')
 app.config['POSTGRES_USER'] = os.getenv('POSTGRES_USER', 'atka')
 app.config['POSTGRES_PASS'] = os.getenv('POSTGRES_PASS', 'atka')
+app.config['DOMAIN']        = os.getenv('DOMAIN', 'bme.lol')
 app.config['WEBSITE_URL']   = os.getenv('WEBSITE_URL', 'http://localhost:5000')
 app.config['SALT']          = os.getenv('SALT', 'mysalt')
 app.config['DEBUG']         = os.getenv('DEBUG', False)
