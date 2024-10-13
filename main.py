@@ -140,7 +140,7 @@ def logout_api_endpoint():
 @app.route("/api/register", methods=['POST'])
 @limiter.limit("3 per minute")
 def register_api_endpoint():
-    return register(request.json['username'], request.json['password'], request.json['email'], app=app)
+    return register(request.json, app=app)
 
 @app.route("/api/change_password", methods=['POST'])
 @limiter.limit("3 per minute")

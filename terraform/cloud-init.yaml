@@ -183,7 +183,7 @@ runcmd:
   - systemctl enable haproxy
   - systemctl start haproxy
 
-  - apt-get -y install pip python3-flask python3-flask-limiter python3-psycopg2 python3-boto3 python3-gunicorn gunicorn
+  - apt-get -y install pip python3-flask python3-flask-limiter python3-psycopg2 python3-boto3 python3-gunicorn gunicorn python3-marshmallow
   - cd /var && git clone https://github.com/tatliHU/memewebsite.git
   - systemctl daemon-reload
   - systemctl enable backup.timer

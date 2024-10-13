@@ -67,6 +67,8 @@ def posts_by_user(user, page, app):
     return to_json(search(sql, (page, user,), app))
 
 def posts_by_title(title, page, app):
+    if 50<len(title):
+        return {'message': 'Search string too long'}, 400
     sql = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, COALESCE(SUM(v.vote), 0) AS score,
             p.tag_all, p.tag_emk, p.tag_gpk, p.tag_epk, p.tag_vbk, p.tag_vik, p.tag_kjk, p.tag_ttk, p.tag_gtk
             FROM posts p

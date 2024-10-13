@@ -4,9 +4,22 @@ import time
 import boto3
 from botocore.exceptions import ClientError
 import hashlib
+from marshmallow import Schema, fields, validate, ValidationError
 
-def register(username, password, email, app):
+class UserSchema(Schema):
+    email = fields.Email(required=True, validate=validate.Length(min=4, max=40), error_messages={'required': 'Email is required', 'invalid': 'Email is invalid'})
+    password = fields.Str(required=True, validate=validate.Length(min=4, max=32), error_messages={'required': 'Password is required', 'invalid': 'Password is invalid'})
+    username = fields.Str(required=True, validate=validate.Length(min=3, max=25), error_messages={'required': 'Username is required', 'invalid': 'Username is invalid'})
+
+def register(json, app):
     try:
+        UserSchema().load(json)
+    except ValidationError as err:
+        return err.messages, 400
+    try:
+        username = json["username"]
+        password = json["password"]
+        email    = json["email"]
         connection = psycopg2.connect(
             dbname   = app.config['POSTGRES_DB'],
             user     = app.config['POSTGRES_USER'],
@@ -52,7 +65,6 @@ def register(username, password, email, app):
             return {'message': 'Please check your spam folder for the email verification'}, 201
         else:
             return 'An error occured while sending email', 500
-
     except Exception as e:
         app.logger.debug(e)
     finally:
@@ -60,7 +72,7 @@ def register(username, password, email, app):
             cursor.close()
             connection.close()
             app.logger.debug("DB connection closed")
-    return 'Internal server error', 500
+    return {'message': 'Internal server error'}, 500
 
 def verify(uuid, app):
     try:

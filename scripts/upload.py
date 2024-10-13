@@ -5,6 +5,8 @@ import uuid
 import time
 
 def upload(image, title, tags, username, app):
+    if 50<len(title):
+        return {'message': 'Title too long'}, 400
     all_tags = ('tag_all', 'tag_emk', 'tag_gpk', 'tag_epk', 'tag_vbk', 'tag_vik', 'tag_kjk', 'tag_ttk', 'tag_gtk')
     tags_dict = {i : 'false' for i in all_tags}
     for i in tags:
