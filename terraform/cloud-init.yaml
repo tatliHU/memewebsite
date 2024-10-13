@@ -119,6 +119,34 @@ write_files:
       Persistent=true
       [Install]
       WantedBy=timers.target
+  - path: /etc/restore-script.sh
+    permissions: '0755'
+    content: |
+      #!/bin/bash
+      echo "Remember to create a backup of the current data before you do a restore."
+      read -p "Do you really want to do a restore? (Y/N): " answer
+      if [[ "$answer" != "Y" ]]; then
+          exit 0
+      fi
+      mkdir -p /tmp/restore
+      select ITEM in $(aws s3 ls s3://${aws_backup_bucket} | awk '{print $4}')
+      do
+        aws s3 cp s3://${aws_backup_bucket}/$ITEM /tmp/restore
+        pg_restore meme --format=tar --file=/tmp/restore/$ITEM
+        break
+      done
+      rm -R /tmp/restore
+  - path: /etc/systemd/system/backup.service
+    content: |
+      [Unit]
+      Description=Backup service
+      [Service]
+      Type=oneshot
+      ExecStart=/etc/backup-script.sh
+      User=postgres
+      Environment="AWS_REGION=${aws_region}"
+      Environment="AWS_ACCESS_KEY_ID=${aws_access_key_id}"
+      Environment="AWS_SECRET_ACCESS_KEY=${aws_secret_access_key}"
   - path: /tmp/haproxy.txt
     content: |
       frontend http_in
@@ -158,6 +186,8 @@ runcmd:
   - apt-get -y install pip python3-flask python3-flask-limiter python3-psycopg2 python3-boto3 python3-gunicorn gunicorn
   - cd /var && git clone https://github.com/tatliHU/memewebsite.git
   - systemctl daemon-reload
+  - systemctl enable backup.timer
+  - systemctl start backup.timer
   - systemctl enable meme
   - systemctl start meme
 

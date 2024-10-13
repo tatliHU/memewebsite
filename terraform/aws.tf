@@ -90,6 +90,32 @@ resource "aws_iam_user_policy_attachment" "meme_user_write_s3_buckets" {
   policy_arn = aws_iam_policy.write_s3_buckets.arn
 }
 
+resource "aws_iam_policy" "restore_from_backup_s3_buckets" {
+  name        = "S3RestoreFromBackupPolicy"
+  description = "Write access to images S3 bucket"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action   = [
+          "s3:GetObject",
+          "s3:ListBucket"
+        ]
+        Effect   = "Allow"
+        Resource = [
+            "arn:aws:s3:::${aws_s3_bucket.backups.id}",
+            "arn:aws:s3:::${aws_s3_bucket.backups.id}/*"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_user_policy_attachment" "restore_from_backup_s3_buckets" {
+  user       = aws_iam_user.meme.name
+  policy_arn = aws_iam_policy.restore_from_backup_s3_buckets.arn
+}
+
 resource "aws_iam_policy" "ses_send_email_policy" {
   name        = "SESSendEmailPolicy"
   description = "Allows sending emails using AWS SES"
