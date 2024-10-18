@@ -23,10 +23,10 @@ def approve(postID, approver, approved, app):
         cursor.execute(get_admin_sql, (approver,))
         admin = cursor.fetchone()
         if not len(admin):
-            return 'User does not exist', 403
+            return {'message': 'User does not exist'}, 403
         app.logger.debug(admin[0])
         if not admin[0]:
-            return 'Unauthorized', 403
+            return {'message': 'You are not an administrator'}, 403
 
         sql = "UPDATE posts SET approved=%s WHERE post_id=%s;"
         values = (approved, postID,)
@@ -37,11 +37,11 @@ def approve(postID, approver, approved, app):
             cursor.execute(sql, values)
 
         connection.commit()
-        return 'Created', 201
+        return '', 201
     except Exception as e:
         app.logger.debug(f"Approval failed for {id}")
         app.logger.debug(e)
-        return 'Approval failed', 500
+        return {'message': 'Approval failed'}, 500
     finally:
         if connection:
             cursor.close()

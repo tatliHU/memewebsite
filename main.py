@@ -148,7 +148,7 @@ def change_password_api_endpoint():
     if 'username' in session:
         return change_password(session['username'], request.json['password'], app=app)
     else:
-        return 'Login required', 401
+        return {'message': 'Login required'}, 401
 
 @app.route("/api/verify/<uuid>", methods=['GET'])
 def verify_api_endpoint(uuid):
@@ -184,7 +184,7 @@ def upload_api_endpoint():
     if 'username' in session:
         return upload(request.files['image'], request.form['title'], request.form.getlist('tags[]'), session['username'], app=app)
     else:
-        return 'Login required', 401
+        return {'message': 'Login required'}, 401
 
 @app.route("/api/vote", methods=['POST'])
 def vote_api_endpoint():
@@ -194,9 +194,9 @@ def vote_api_endpoint():
         elif int(request.json['delta']) == -1:
             return downvote(request.json['postID'], session['username'], app=app)
         else:
-            return 'Invalid vote', 400
+            return {'message': 'Invalid vote'}, 400
     else:
-        return 'Login required', 401
+        return {'message': 'Login required'}, 401
 
 @app.route("/api/admin", methods=['GET'])
 def admin_api_endpoint():
@@ -210,6 +210,6 @@ def approve_api_endpoint():
         elif int(request.json['delta']) == -1:
             return deny(request.json['postID'], session['username'], app=app)
         else:
-            return 'Invalid vote', 400
+            return {'message': 'Invalid vote'}, 400
     else:
-        return 'Login required', 401
+        return {'message': 'Login required'}, 401

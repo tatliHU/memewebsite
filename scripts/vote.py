@@ -38,11 +38,11 @@ def vote(postID, username, score, app):
         app.logger.debug(values)
         cursor.execute(sql, values)
         connection.commit()
-        return 'Created', 201
+        return '', 201
     except Exception as e:
         app.logger.debug(f"Vote failed for {id}")
         app.logger.debug(e)
-        return 'Vote failed', 500
+        return {'message': 'Vote failed'}, 500
     finally:
         if connection:
             cursor.close()

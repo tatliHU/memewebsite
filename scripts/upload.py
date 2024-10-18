@@ -13,13 +13,13 @@ def upload(image, title, tags, username, app):
         tags_dict[i] = 'true'
     
     if image.filename == '':
-        return 'No image selected', 400
+        return {'message': 'No image selected'}, 400
 
     id = uuid.uuid4()
     app.logger.debug(f"Generated Id: {id}")
     file_format = secure_filename(image.filename).split(".")[-1]
     if file_format not in ["jpg", "png", "gif"]:
-        return 'Invalid file format', 406
+        return {'message': 'Invalid file format'}, 406
         
     # DB upload
     try:
@@ -56,7 +56,7 @@ def upload(image, title, tags, username, app):
     except Exception as e:
         app.logger.debug(f"DB upload failed for {id}")
         app.logger.debug(e)
-        return 'File upload failed', 500
+        return {'message': 'File upload failed'}, 500
     finally:
         if connection:
             cursor.close()
@@ -69,8 +69,8 @@ def upload(image, title, tags, username, app):
         s3_client = boto3.client('s3')
         s3_client.upload_fileobj(image, app.config['S3_BUCKET'], f"{id}.{file_format}",
                                  ExtraArgs={'ContentType': image.content_type, 'ACL': 'public-read'})
-        return 'Created', 201
+        return {'message': 'File uploaded. Please give some time for administrator approval.'}, 201
     except Exception as e:
         app.logger.debug(f"S3 upload failed for {id}")
         app.logger.debug(e)
-        return 'File upload failed', 500
+        return {'message': 'File upload failed'}, 500

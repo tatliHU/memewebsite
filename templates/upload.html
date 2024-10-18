@@ -51,18 +51,20 @@
             body: formData
         })
         .then(response => {
-            if (response.status === 201) {
-                alert('Your meme is waiting for approval')
-                window.location.href = '/';
-            } else {
-                return response.json().then(data => {
-                    alert('Failed to upload image: ' + (data.message || 'Unknown error'));
-                });
+            if (response.ok) {
+                return response.json();
             }
+            return Promise.reject(response);
         })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while uploading the image.');
+        .then(data => {
+            alert(data.message)
+            window.location.href = '/'; // Redirect on success
+        })
+        .catch((response) => {
+            response.json().then((json) => {
+                console.log(json.message);
+                alert(json.message);
+            })
         });
 
         return false;  // Ensure the form doesn't try to submit the usual way

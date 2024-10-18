@@ -36,7 +36,7 @@ def register(json, app):
         user = cursor.fetchone()
         if user:
             app.logger.debug("User found")
-            return 'User already exists', 400
+            return {'message': 'User already exists'}, 400
         
         app.logger.debug("Checking if email is already in use")
         get_user_sql = "SELECT username FROM users WHERE email=%s;"
@@ -44,7 +44,7 @@ def register(json, app):
         user = cursor.fetchone()
         if user:
             app.logger.debug("Email found")
-            return 'Email is already registered for a user', 400
+            return {'message': 'User with this email already exists'}, 400
         
         app.logger.debug("Deleting old registration if exists")
         delete_registration_sql = "DELETE FROM pending_registrations WHERE email=%s;"
@@ -62,9 +62,9 @@ def register(json, app):
         
         app.logger.debug("Sending email for verification")
         if send_email(email, uuid, app):
-            return {'message': 'Please check your spam folder for the email verification'}, 201
+            return {'message': 'Please check your email to verify your user'}, 201
         else:
-            return 'An error occured while sending email', 500
+            return {'message': 'An error occured while sending verification email'}, 500
     except Exception as e:
         app.logger.debug(e)
     finally:
@@ -91,7 +91,7 @@ def verify(uuid, app):
         cursor.execute(get_user_sql, (uuid,))
         user = cursor.fetchone()
         if not user:
-            return 'Registration does not exist', 404
+            return {'message': 'Registration does not exist'}, 404
         
         app.logger.debug("Deleting registration")
         delete_registration_sql = "DELETE FROM pending_registrations WHERE uuid=%s;"
@@ -102,7 +102,7 @@ def verify(uuid, app):
         cursor.execute(create_user_sql, (user[0], user[1], user[2],))
 
         connection.commit()
-        return 'Created', 201
+        return {'message': 'Verification was successful. Please return to the homepage'}, 201
 
     except Exception as e:
         app.logger.debug(e)
@@ -111,7 +111,7 @@ def verify(uuid, app):
             cursor.close()
             connection.close()
             app.logger.debug("DB connection closed")
-    return 'Internal server error', 500
+    return {'message': 'Internal server error'}, 500
 
 def send_email(email, uuid, app):
     app.logger.debug(email+" with "+uuid)

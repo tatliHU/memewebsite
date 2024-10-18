@@ -19,7 +19,7 @@ def change_password(username, password, app):
         cursor.execute(password_change_sql, (password_hash, username,))
         connection.commit()
 
-        return 'Password updated', 200
+        return {'message': 'Password updated'}, 200
 
     except Exception as e:
         app.logger.debug(e)
@@ -28,4 +28,4 @@ def change_password(username, password, app):
             cursor.close()
             connection.close()
             app.logger.debug("DB connection closed")
-    return 'Internal server error', 500
+    return {'message': 'Internal server error'}, 500

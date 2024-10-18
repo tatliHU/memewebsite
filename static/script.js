@@ -45,25 +45,28 @@ function displayImages(images, voteEndpoint) {
     });
 }
 
-async function vote(postID, delta, voteEndpoint) {
-    try {
-        const response = await fetch(`/api/${voteEndpoint}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ postID, delta })
-        });
-
+function vote(postID, delta, voteEndpoint) {
+    fetch(`/api/${voteEndpoint}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ postID, delta })
+    })
+    .then(response => {
         if (response.ok) {
             scoreText = document.getElementById(`score-${postID}`)
             scoreText.textContent = parseInt(scoreText.textContent) + delta;
-        } else {
-            console.error('Error voting:', response.statusText);
+            return;
         }
-    } catch (error) {
-        console.error('Error voting:', error);
-    }
+        return Promise.reject(response);
+    })
+    .catch(response => {
+        response.json().then((json) => {
+            console.log(json.message);
+            alert(json.message);
+        })
+    });
 }
 
 function showLoginForm(form) {
@@ -100,19 +103,15 @@ function submitLogin() {
     })
     .then(response => {
         if (response.ok) {
-            return response.json();
+            window.location.href = '/';
         }
-        throw new Error('Authentication failed');
+        return Promise.reject(response);
     })
-    .then(data => {
-        // Handle success
-        console.log('Login successful', data);
-        window.location.href = '/'; // Redirect on success
-    })
-    .catch(error => {
-        // Handle error
-        console.error('Error:', error);
-        alert('Login failed');
+    .catch(response => {
+        response.json().then((json) => {
+            console.log(json.message);
+            alert(json.message);
+        })
     });
 }
 
@@ -138,18 +137,18 @@ function submitRegister() {
         if (response.ok) {
             return response.json();
         }
-        throw new Error('Registration failed');
+        return Promise.reject(response);
     })
     .then(data => {
-        // Handle success
-        console.log('Registration was successful', data);
-        alert('An email was sent with the profile verification link. Check your spam folder.')
+        alert(data)
         window.location.href = '/'; // Redirect on success
     })
-    .catch(error => {
-        // Handle error
-        console.error('Error:', error);
-        alert('Registration failed');
+    .catch((response) => {
+        response.json().then((json) => {
+            for (const key in json) {
+                json[key].forEach(item => alert(`${key}: ${item}`));
+            }
+        })
     });
 }
 

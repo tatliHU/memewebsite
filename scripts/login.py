@@ -10,7 +10,7 @@ def login(authorization, app):
         parts = decoded.split(":")
         username, password = parts[0], parts[1]
     except Exception as e:
-        return 'Unauthorized', 401
+        return {'message': 'Unauthorized'}, 401
     
     try:
         connection = psycopg2.connect(
@@ -27,11 +27,11 @@ def login(authorization, app):
         password_hash = hashlib.md5((password+app.config['SALT']).encode()).hexdigest()
         if get_password(username, app)==password_hash:
             flask.session['username'] = username
-            return {'message': 'Welcome '+username}, 200
+            return '', 200
         else:
-            return 'Unauthorized', 401
+            return {'message': 'Unauthorized'}, 401
     except LookupError:
-        return 'User does not exist', 400
+        return {'message': 'User does not exist'}, 400
     except Exception as e:
         app.logger.debug(e)
     finally:
@@ -39,7 +39,7 @@ def login(authorization, app):
             cursor.close()
             connection.close()
             app.logger.debug("DB connection closed")
-    return 'Internal server error', 500
+    return {'message': 'Internal server error'}, 500
 
 def get_password(username, app):
     try:
