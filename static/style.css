@@ -131,10 +131,11 @@ body {
 }
 .navbar {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     background-color: #b02525;
-    padding: 10px 20px;
+    padding: 2px 5px;
 }
 .navbar .menu {
     display: flex;
@@ -258,9 +259,8 @@ body {
 }
 
 .dropdown img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
+    width: 7vh;
+    height: 7vh;
     cursor: pointer;
 }
 
@@ -296,9 +296,7 @@ body {
     text-decoration: none;
     color: white;
     font-weight: bold;
-    padding: 8px 12px;
     transition: background-color 0.3s ease;
-    font-size: 16px;
     margin-right: 10px;
     display: flex;
     align-items: center;
