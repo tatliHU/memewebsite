@@ -83,6 +83,17 @@ def search_endpoint():
         username=session['username'] if 'username' in session else ''
     )
 
+@app.route("/user", methods=['GET'])
+def user_endpoint():
+    return render_template(
+        'index.html',
+        func="user",
+        page=request.args.get('page', 1),
+        query="name="+request.args.get('name'),
+        voteEndpoint="vote",
+        username=session['username'] if 'username' in session else ''
+    )
+
 @app.route("/upload", methods=['GET'])
 def upload_endpoint():
     return render_template('upload.html', username=session['username'] if 'username' in session else '')
@@ -174,8 +185,8 @@ def random_api_endpoint():
 def search_api_endpoint():
     return posts_by_title(request.args.get('title'), request.args.get('page', ''), app=app)
 
-@app.route("/api/users", methods=['GET'])
-def users_api_endpoint():
+@app.route("/api/user", methods=['GET'])
+def user_api_endpoint():
     return posts_by_user(request.args.get('name', ''), request.args.get('page', ''), app=app)
 
 @app.route("/api/upload", methods=['POST'])

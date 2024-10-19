@@ -60,11 +60,11 @@ def posts_by_user(user, page, app):
             p.tag_all, p.tag_emk, p.tag_gpk, p.tag_epk, p.tag_vbk, p.tag_vik, p.tag_kjk, p.tag_ttk, p.tag_gtk
             FROM posts p
             LEFT JOIN votes v ON p.post_id = v.post_id
-            WHERE username=%s AND approved IS true
+            WHERE p.username=%s AND approved IS true
             GROUP BY p.post_id
             ORDER BY published
             LIMIT 10 OFFSET (%s - 1) * 10;"""
-    return to_json(search(sql, (page, user,), app))
+    return to_json(search(sql, (user, page,), app))
 
 def posts_by_title(title, page, app):
     if 50<len(title):

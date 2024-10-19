@@ -135,7 +135,7 @@ body {
     justify-content: space-between;
     align-items: center;
     background-color: #b02525;
-    padding: 2px 5px;
+    padding: 5px 5px;
 }
 .navbar .menu {
     display: flex;

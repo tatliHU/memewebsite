@@ -36,7 +36,7 @@ function displayImages(images, voteEndpoint) {
                     <button class="vote-button" onclick="vote(${image.postid}, -1, '${voteEndpoint}')">-</button>
                 </div>
                 <div class="postername">
-                    <a href="/user/${image.username}">${image.username}</a>
+                    <a href="/user?name=${image.username}">${image.username}</a>
                 </div>
             </div>
         `;
