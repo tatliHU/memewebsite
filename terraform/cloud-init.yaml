@@ -37,8 +37,8 @@ write_files:
     content: | 
       CREATE USER ${username} WITH PASSWORD '${password}';
       CREATE DATABASE meme WITH OWNER ${username};
-      CREATE EXTENSION tsm_system_rows;
       \c meme;
+      CREATE EXTENSION tsm_system_rows;
       CREATE TABLE users (
           username VARCHAR(25) NOT NULL,
           password VARCHAR(32) NOT NULL,
