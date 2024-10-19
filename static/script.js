@@ -16,7 +16,7 @@ function displayImages(images, voteEndpoint) {
         let hrefs = '';
         image.tags.forEach(tag => {
             displayed_tag=tag.replace(/^tag_/, '').toUpperCase();
-            const href = `<a href="/tag/${tag}">${displayed_tag}</a>`;
+            const href = `<a href="/tag?name=${tag}">${displayed_tag}</a>`;
             hrefs += href + '\n';
         });
         

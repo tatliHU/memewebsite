@@ -4,7 +4,7 @@ from flask_limiter.util import get_remote_address
 from scripts.register import register, verify
 from scripts.login import login
 from scripts.change_password import change_password
-from scripts.search import fresh, top, trash, random, posts_by_user, posts_by_title, approve
+from scripts.search import fresh, top, trash, random, posts_by_user, posts_by_title, posts_by_tag, approve
 from scripts.upload import upload
 from scripts.vote import upvote, downvote
 from scripts.approve import accept, deny
@@ -88,6 +88,17 @@ def user_endpoint():
     return render_template(
         'index.html',
         func="user",
+        page=request.args.get('page', 1),
+        query="name="+request.args.get('name'),
+        voteEndpoint="vote",
+        username=session['username'] if 'username' in session else ''
+    )
+
+@app.route("/tag", methods=['GET'])
+def tag_endpoint():
+    return render_template(
+        'index.html',
+        func="tag",
         page=request.args.get('page', 1),
         query="name="+request.args.get('name'),
         voteEndpoint="vote",
@@ -188,6 +199,10 @@ def search_api_endpoint():
 @app.route("/api/user", methods=['GET'])
 def user_api_endpoint():
     return posts_by_user(request.args.get('name', ''), request.args.get('page', ''), app=app)
+
+@app.route("/api/tag", methods=['GET'])
+def tag_api_endpoint():
+    return posts_by_tag(request.args.get('name', ''), request.args.get('page', ''), app=app)
 
 @app.route("/api/upload", methods=['POST'])
 @limiter.limit("3 per minute")
