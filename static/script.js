@@ -25,8 +25,13 @@ function displayImages(images, voteEndpoint) {
 
         imageCard.innerHTML = `
             <div class="image-top">
-                <a>${image.title}</a>
-                <span>${hrefs}</span>
+                <div class="image-top-left"></div>
+                <div class="image-top-middle">
+                    <a>${image.title}</a>
+                </div>
+                <div class="image-top-right">
+                    <span>${hrefs}</span>
+                </div>
             </div>
             <img src="${image.url}" alt="Unable to load image">
             <div class="voting-oval">

@@ -26,7 +26,7 @@ body {
     background-color: white;
     border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 15px;
+    padding: 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     text-align: center;
 }
@@ -40,29 +40,35 @@ body {
     display: block;
 }
 .image-top {
-    position: relative;
-    height: 40px;
-    margin: 10px 0;
+    display: flex;
+    margin-top: 3px;
+    margin-bottom: 8px;
 }
-.image-top a {
-    transform: translateX(-50%);
+.image-top-left {
+    width: 20%;
+}
+.image-top-middle {
+    width: 60%;
+}
+.image-top-right {
+    width: 20%;
+    text-align: right;
+}
+.image-top-middle a {
     text-align: center;
     font-size: 1.5rem;
     font-weight: bold;
     color: #333;
     text-decoration: none
 }
-.image-top span {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    display: flex;
+.image-top-right span {
     gap: 10px;
 }
-.image-top span a {
+.image-top-right span a {
     color: #888;
     text-decoration: none;
     font-size: 1rem;
+    font-weight: bold;
 }
 .voting-oval {
     display: flex;
@@ -118,7 +124,6 @@ body {
     justify-content: space-between;
     align-items: center;
     background-color: #b02525;
-    padding: 10px 20px;
 }
 .logo img {
     display: block;
