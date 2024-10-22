@@ -8,6 +8,7 @@ from scripts.search import fresh, top, trash, random, posts_by_user, posts_by_ti
 from scripts.upload import upload
 from scripts.vote import upvote, downvote
 from scripts.approve import accept, deny
+from scripts.change_password import change_password
 import os
 
 app = Flask(__name__)
@@ -109,6 +110,10 @@ def tag_endpoint():
 def upload_endpoint():
     return render_template('upload.html', username=session['username'] if 'username' in session else '')
 
+@app.route("/change-password", methods=['GET'])
+def change_password_endpoint():
+    return render_template('change_password.html', username=session['username'] if 'username' in session else '')
+
 @app.route("/admin", methods=['GET'])
 def admin_endpoint():
     return render_template(
@@ -164,7 +169,7 @@ def logout_api_endpoint():
 def register_api_endpoint():
     return register(request.json, app=app)
 
-@app.route("/api/change_password", methods=['POST'])
+@app.route("/api/change-password", methods=['POST'])
 @limiter.limit("3 per minute")
 def change_password_api_endpoint():
     if 'username' in session:

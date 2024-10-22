@@ -1,7 +1,16 @@
 import psycopg2
 import hashlib
+from marshmallow import Schema, fields, validate, ValidationError
+
+class UserSchema(Schema):
+    password = fields.Str(required=True, validate=validate.Length(min=4, max=32), error_messages={'required': 'Password is required', 'invalid': 'Password is invalid'})
+    username = fields.Str(required=True, validate=validate.Length(min=3, max=25), error_messages={'required': 'Username is required', 'invalid': 'Username is invalid'})
 
 def change_password(username, password, app):
+    try:
+        UserSchema().load({"username": username, "password": password})
+    except ValidationError as err:
+        return err.messages, 400
     try:
         connection = psycopg2.connect(
             dbname   = app.config['POSTGRES_DB'],
