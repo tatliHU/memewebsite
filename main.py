@@ -173,7 +173,7 @@ def register_api_endpoint():
 @limiter.limit("3 per minute")
 def change_password_api_endpoint():
     if 'username' in session:
-        return change_password(session['username'], request.json['password'], app=app)
+        return change_password(session['username'], request.json['currentPassword'], request.json['newPassword'], app=app)
     else:
         return {'message': 'Login required'}, 401
 
