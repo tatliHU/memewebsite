@@ -1,7 +1,7 @@
 import psycopg2
-import hashlib
+import bcrypt
 from marshmallow import Schema, fields, validate, ValidationError
-from scripts.helpers import get_password
+from scripts.helpers import match_password
 
 class UserSchema(Schema):
     password = fields.Str(required=True, validate=validate.Length(min=4, max=32), error_messages={'required': 'Password is required', 'invalid': 'Password is invalid'})
@@ -9,8 +9,7 @@ class UserSchema(Schema):
 
 def change_password(username, currentPassword, newPassword, app):
     try:
-        currentPasswordHash = hashlib.md5((currentPassword+app.config['SALT']).encode()).hexdigest()
-        if get_password(username, app) != currentPasswordHash:
+        if match_password(username, currentPassword, app) == False:
             return {'message': 'Current password is invalid'}, 400
     except LookupError:
         app.logger.debug("User does not exist")
@@ -30,7 +29,8 @@ def change_password(username, currentPassword, newPassword, app):
         app.logger.debug("DB connection opened")
         
         app.logger.debug("Changing password")
-        password_hash = hashlib.md5((newPassword+app.config['SALT']).encode()).hexdigest()
+        salt = bcrypt.gensalt()
+        password_hash = bcrypt.hashpw(newPassword.encode('utf-8'), salt).decode('utf8')
         password_change_sql = "UPDATE users SET password=%s WHERE username=%s;"
         cursor.execute(password_change_sql, (password_hash, username,))
         connection.commit()

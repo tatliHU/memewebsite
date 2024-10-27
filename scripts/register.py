@@ -1,9 +1,9 @@
 import psycopg2
 from uuid import uuid4
+import bcrypt
 import time
 import boto3
 from botocore.exceptions import ClientError
-import hashlib
 from marshmallow import Schema, fields, validate, ValidationError
 
 class UserSchema(Schema):
@@ -56,7 +56,8 @@ def register(json, app):
             INSERT INTO pending_registrations (username, password, email, uuid, created)
             VALUES (%s, %s, %s, %s, %s);
         '''
-        password_hash = hashlib.md5((password+app.config['SALT']).encode()).hexdigest()
+        salt = bcrypt.gensalt()
+        password_hash = bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf8')
         cursor.execute(create_registration_sql, (username, password_hash, email, uuid, int(round(time.time())),))
         connection.commit()
         

@@ -16,7 +16,6 @@ data "template_file" "cloud_init" {
     aws_secret_access_key = aws_iam_access_key.meme.secret
     contact_email         = var.contact_email
     domain                = var.domain
-    salt                  = var.salt
     debug                 = var.debug ? "True" : "False"
   }
 }

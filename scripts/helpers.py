@@ -1,6 +1,7 @@
 import psycopg2
+import bcrypt
 
-def get_password(username, app):
+def match_password(username, password, app):
     try:
         connection = psycopg2.connect(
             dbname   = app.config['POSTGRES_DB'],
@@ -15,14 +16,14 @@ def get_password(username, app):
         app.logger.debug("Retrieving password")
         get_user_sql = "SELECT password FROM users WHERE username=%s;"
         cursor.execute(get_user_sql, (username,))
-        password = cursor.fetchone()
-        if password:
-            return password[0]
+        result = cursor.fetchone()
+        if result and bcrypt.checkpw(password.encode('utf-8'), result[0].encode('utf-8')):
+            return True
         else:
-            raise LookupError()
+            return False
     except Exception as e:
         app.logger.debug(e)
-        raise LookupError()
+        return False
     finally:
         if connection:
             cursor.close()

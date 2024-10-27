@@ -145,7 +145,7 @@ function submitRegister() {
         return Promise.reject(response);
     })
     .then(data => {
-        alert(data)
+        alert(data.message)
         window.location.href = '/'; // Redirect on success
     })
     .catch((response) => {

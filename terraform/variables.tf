@@ -73,12 +73,6 @@ variable "destroy_data" {
     description = "Setting this to true deletes all data on terraform destroy. Do not set to true on production."
 }
 
-variable "salt" {
-    type        = string
-    default     = "changeme"
-    description = "Password hash salt. Change it for security."
-}
-
 variable "debug" {
     type    = bool
     default = false

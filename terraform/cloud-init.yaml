@@ -31,7 +31,6 @@ write_files:
       Environment="AWS_DEFAULT_REGION=${aws_region}"
       Environment="AWS_ACCESS_KEY_ID=${aws_access_key_id}"
       Environment="AWS_SECRET_ACCESS_KEY=${aws_secret_access_key}"
-      Environment="SALT=${salt}"
       Environment="DEBUG=${debug}"
   - path: /tmp/db_init.sql
     content: | 
@@ -41,7 +40,7 @@ write_files:
       CREATE EXTENSION tsm_system_rows;
       CREATE TABLE users (
           username VARCHAR(25) NOT NULL,
-          password VARCHAR(32) NOT NULL,
+          password TEXT NOT NULL,
           email VARCHAR(50) NOT NULL,
           admin BOOLEAN DEFAULT false,
           PRIMARY KEY (username)
@@ -80,8 +79,8 @@ write_files:
       CREATE TABLE pending_registrations (
           email VARCHAR(40) NOT NULL,
           uuid VARCHAR(36) NOT NULL,
-        username VARCHAR(25) NOT NULL,
-          password VARCHAR(32) NOT NULL,
+          username VARCHAR(25) NOT NULL,
+          password TEXT NOT NULL,
           Created INT NOT NULL,
           PRIMARY KEY (email)
       );
@@ -183,7 +182,7 @@ runcmd:
   - systemctl enable haproxy
   - systemctl start haproxy
 
-  - apt-get -y install pip python3-flask python3-flask-limiter python3-psycopg2 python3-boto3 python3-gunicorn gunicorn python3-marshmallow
+  - apt-get -y install pip python3-flask python3-flask-limiter python3-psycopg2 python3-boto3 python3-gunicorn gunicorn python3-marshmallow python3-bcrypt
   - cd /var && git clone https://github.com/tatliHU/memewebsite.git
   - systemctl daemon-reload
   - systemctl enable backup.timer

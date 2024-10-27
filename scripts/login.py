@@ -1,8 +1,7 @@
 import base64
 import psycopg2
 import flask
-import hashlib
-from scripts.helpers import get_password
+from scripts.helpers import match_password
 
 def login(authorization, app):
     try:
@@ -25,14 +24,11 @@ def login(authorization, app):
         app.logger.debug("DB connection opened")
         
         app.logger.debug("Authorizing")
-        password_hash = hashlib.md5((password+app.config['SALT']).encode()).hexdigest()
-        if get_password(username, app)==password_hash:
+        if match_password(username, password, app):
             flask.session['username'] = username
             return '', 200
         else:
-            return {'message': 'Unauthorized'}, 401
-    except LookupError:
-        return {'message': 'User does not exist'}, 400
+            return {'message': 'Invalid username or password'}, 401
     except Exception as e:
         app.logger.debug(e)
     finally:

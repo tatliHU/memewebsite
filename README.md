@@ -73,7 +73,7 @@ CREATE DATABASE meme WITH OWNER atka;
 CREATE EXTENSION tsm_system_rows;
 CREATE TABLE users (
     username VARCHAR(25) NOT NULL,
-    password VARCHAR(32) NOT NULL,
+    password TEXT NOT NULL,
     email VARCHAR(50) NOT NULL,
     admin BOOLEAN DEFAULT false,
     PRIMARY KEY (username)
@@ -113,7 +113,7 @@ CREATE TABLE pending_registrations (
     email VARCHAR(40) NOT NULL,
     uuid VARCHAR(36) NOT NULL,
 	username VARCHAR(25) NOT NULL,
-    password VARCHAR(32) NOT NULL,
+    password TEXT NOT NULL,
     Created INT NOT NULL,
     PRIMARY KEY (email)
 );
