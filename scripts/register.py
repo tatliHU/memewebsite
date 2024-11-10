@@ -2,9 +2,8 @@ import psycopg2
 from uuid import uuid4
 import bcrypt
 import time
-import boto3
-from botocore.exceptions import ClientError
 from marshmallow import Schema, fields, validate, ValidationError
+from scripts.helpers import send_email
 
 class UserSchema(Schema):
     email = fields.Email(required=True, validate=validate.Length(min=4, max=40), error_messages={'required': 'Email is required', 'invalid': 'Email is invalid'})
@@ -36,7 +35,7 @@ def register(json, app):
         user = cursor.fetchone()
         if user:
             app.logger.debug("User found")
-            return {'message': 'User already exists'}, 400
+            return {'message': 'Please check your email to verify your user'}, 201
         
         app.logger.debug("Checking if email is already in use")
         get_user_sql = "SELECT username FROM users WHERE email=%s;"
@@ -44,7 +43,7 @@ def register(json, app):
         user = cursor.fetchone()
         if user:
             app.logger.debug("Email found")
-            return {'message': 'User with this email already exists'}, 400
+            return {'message': 'Please check your email to verify your user'}, 201
         
         app.logger.debug("Deleting old registration if exists")
         delete_registration_sql = "DELETE FROM pending_registrations WHERE email=%s;"
@@ -62,7 +61,7 @@ def register(json, app):
         connection.commit()
         
         app.logger.debug("Sending email for verification")
-        if send_email(email, uuid, app):
+        if send_email(email, 'files/verify_email.html', 'Email verification', f"/api/verify/{str(uuid)}", app):
             return {'message': 'Please check your email to verify your user'}, 201
         else:
             return {'message': 'An error occured while sending verification email'}, 500
@@ -113,36 +112,3 @@ def verify(uuid, app):
             connection.close()
             app.logger.debug("DB connection closed")
     return {'message': 'Internal server error'}, 500
-
-def send_email(email, uuid, app):
-    app.logger.debug(email+" with "+uuid)
-    with open('files/email.html', 'r') as file:
-        body_html = file.read()
-    body_html = body_html.replace('[LINK]', f"{app.config['WEBSITE_URL']}/api/verify/{str(uuid)}")
-    body_html = body_html.replace('[DOMAIN]', app.config['DOMAIN'])
-    ses_client = boto3.client('ses')
-    try:
-        response = ses_client.send_email(
-            Destination={
-                'ToAddresses': [email,],
-            },
-            Message={
-                'Body': {
-                    'Html': {
-                        'Charset': 'UTF-8',
-                        'Data': body_html,
-                    },
-                },
-                'Subject': {
-                    'Charset': 'UTF-8',
-                    'Data': 'Email verification',
-                },
-            },
-            Source=f"noreply@{app.config['DOMAIN']}",
-        )
-        return True
-    except ClientError as e:
-        app.logger.debug(e.response['Error']['Message'])
-    except:
-        app.logger.debug("Unknown error when sending email")
-    return False

@@ -114,7 +114,15 @@ CREATE TABLE pending_registrations (
     uuid VARCHAR(36) NOT NULL,
 	username VARCHAR(25) NOT NULL,
     password TEXT NOT NULL,
-    Created INT NOT NULL,
+    created INT NOT NULL,
+    PRIMARY KEY (email)
+);
+
+CREATE TABLE pending_passwords (
+    email VARCHAR(40) NOT NULL,
+    uuid VARCHAR(36) NOT NULL,
+    username VARCHAR(25) NOT NULL,
+    created INT NOT NULL,
     PRIMARY KEY (email)
 );
 
@@ -122,5 +130,6 @@ GRANT ALL PRIVILEGES ON TABLE users TO atka;
 GRANT ALL PRIVILEGES ON TABLE posts TO atka;
 GRANT ALL PRIVILEGES ON TABLE votes TO atka;
 GRANT ALL PRIVILEGES ON TABLE pending_registrations TO atka;
+GRANT ALL PRIVILEGES ON TABLE pending_passwords TO atka;
 GRANT USAGE, SELECT, UPDATE ON SEQUENCE posts_post_id_seq TO atka;
 ```

@@ -1,5 +1,7 @@
 import psycopg2
 import bcrypt
+import boto3
+from botocore.exceptions import ClientError
 
 def match_password(username, password, app):
     try:
@@ -29,3 +31,35 @@ def match_password(username, password, app):
             cursor.close()
             connection.close()
             app.logger.debug("DB connection closed")
+
+def send_email(email, file, title, urn, app):
+    with open(file, 'r') as html_file:
+        body_html = html_file.read()
+    body_html = body_html.replace('[LINK]', f"{app.config['WEBSITE_URL']}{urn}")
+    body_html = body_html.replace('[DOMAIN]', app.config['DOMAIN'])
+    ses_client = boto3.client('ses')
+    try:
+        response = ses_client.send_email(
+            Destination={
+                'ToAddresses': [email,],
+            },
+            Message={
+                'Body': {
+                    'Html': {
+                        'Charset': 'UTF-8',
+                        'Data': body_html,
+                    },
+                },
+                'Subject': {
+                    'Charset': 'UTF-8',
+                    'Data': title,
+                },
+            },
+            Source=f"noreply@{app.config['DOMAIN']}",
+        )
+        return True
+    except ClientError as e:
+        app.logger.debug(e.response['Error']['Message'])
+    except:
+        app.logger.debug("Unknown error when sending email")
+    return False

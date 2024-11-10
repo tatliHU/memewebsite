@@ -3,12 +3,11 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from scripts.register import register, verify
 from scripts.login import login
-from scripts.change_password import change_password
+from scripts.change_password import change_password, forgot_password, reset_password
 from scripts.search import fresh, top, trash, random, posts_by_user, posts_by_title, posts_by_tag, approve
 from scripts.upload import upload
 from scripts.vote import upvote, downvote
 from scripts.approve import accept, deny
-from scripts.change_password import change_password
 import os
 
 app = Flask(__name__)
@@ -113,6 +112,10 @@ def upload_endpoint():
 def change_password_endpoint():
     return render_template('change_password.html', username=session['username'] if 'username' in session else '')
 
+@app.route("/forgot-password", methods=['GET'])
+def forgot_password_endpoint():
+    return render_template('forgot_password.html', username=session['username'] if 'username' in session else '')
+
 @app.route("/admin", methods=['GET'])
 def admin_endpoint():
     return render_template(
@@ -158,7 +161,7 @@ def logo_endpoint():
 def login_api_endpoint():
     return login(request.headers.get('Authorization'), app=app)
 
-@app.route('/api/logout')
+@app.route('/api/logout', methods=['GET', 'POST'])
 def logout_api_endpoint():
     session.pop('username', None)
     return redirect("/")
@@ -175,6 +178,15 @@ def change_password_api_endpoint():
         return change_password(session['username'], request.json['currentPassword'], request.json['newPassword'], app=app)
     else:
         return {'message': 'Login required'}, 401
+
+@app.route("/api/forgot-password", methods=['POST'])
+@limiter.limit("3 per minute")
+def forgot_password_api_endpoint():
+    return forgot_password(request.json['email'], app=app)
+
+@app.route("/api/forgot-password/<uuid>", methods=['GET'])
+def reset_password_api_endpoint(uuid):
+    return reset_password(uuid, app=app)
 
 @app.route("/api/verify/<uuid>", methods=['GET'])
 def verify_api_endpoint(uuid):
