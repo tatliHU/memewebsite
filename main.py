@@ -8,6 +8,7 @@ from scripts.search import fresh, top, trash, random, posts_by_user, posts_by_ti
 from scripts.upload import upload
 from scripts.vote import upvote, downvote
 from scripts.approve import accept, deny
+from scripts.helpers import is_admin
 import os
 
 app = Flask(__name__)
@@ -118,6 +119,8 @@ def forgot_password_endpoint():
 
 @app.route("/admin", methods=['GET'])
 def admin_endpoint():
+    if not 'username' in session or not is_admin(session['username'], app):
+        return {'message': 'You must be an admin to view this page'}, 403
     return render_template(
         'index.html',
         func="admin",
@@ -125,7 +128,7 @@ def admin_endpoint():
         voteEndpoint="approve",
         username=session['username'] if 'username' in session else ''
     )
-
+    
 # static files
 @app.route("/favicon.ico", methods=['GET'])
 def favicon_endpoint():

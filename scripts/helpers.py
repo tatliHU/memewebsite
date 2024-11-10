@@ -21,6 +21,19 @@ def close_postgres_connection(connection, cursor, app):
         connection.close()
         app.logger.debug("DB connection closed")
 
+def is_admin(username, app):
+    try:
+        connection, cursor = open_postgres_connection(app)
+        get_user_sql = "SELECT admin FROM users WHERE username=%s;"
+        cursor.execute(get_user_sql, (username,))
+        result = cursor.fetchone()[0]
+        return result
+    except Exception as e:
+        app.logger.debug(e)
+        return False
+    finally:
+        close_postgres_connection(connection, cursor, app)
+
 def match_password(username, password, app):
     try:
         connection, cursor = open_postgres_connection(app)
