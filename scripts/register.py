@@ -1,9 +1,8 @@
-import psycopg2
 from uuid import uuid4
 import bcrypt
 import time
 from marshmallow import Schema, fields, validate, ValidationError
-from scripts.helpers import send_email
+from scripts.helpers import send_email, open_postgres_connection, close_postgres_connection
 
 class UserSchema(Schema):
     email = fields.Email(required=True, validate=validate.Length(min=4, max=40), error_messages={'required': 'Email is required', 'invalid': 'Email is invalid'})
@@ -19,15 +18,7 @@ def register(json, app):
         username = json["username"]
         password = json["password"]
         email    = json["email"]
-        connection = psycopg2.connect(
-            dbname   = app.config['POSTGRES_DB'],
-            user     = app.config['POSTGRES_USER'],
-            password = app.config['POSTGRES_PASS'],
-            host     = app.config['POSTGRES_HOST'],
-            port     = app.config['POSTGRES_PORT']
-        )
-        cursor = connection.cursor()
-        app.logger.debug("DB connection opened")
+        connection, cursor = open_postgres_connection(app)
         
         app.logger.debug("Checking if user exists")
         get_user_sql = "SELECT username FROM users WHERE username=%s;"
@@ -68,25 +59,13 @@ def register(json, app):
     except Exception as e:
         app.logger.debug(e)
     finally:
-        if connection:
-            cursor.close()
-            connection.close()
-            app.logger.debug("DB connection closed")
+        close_postgres_connection(connection, cursor, app)
     return {'message': 'Internal server error'}, 500
 
 def verify(uuid, app):
     try:
-        connection = psycopg2.connect(
-            dbname   = app.config['POSTGRES_DB'],
-            user     = app.config['POSTGRES_USER'],
-            password = app.config['POSTGRES_PASS'],
-            host     = app.config['POSTGRES_HOST'],
-            port     = app.config['POSTGRES_PORT']
-        )
-        cursor = connection.cursor()
-        app.logger.debug("DB connection opened")
+        connection, cursor = open_postgres_connection(app)
         
-        app.logger.debug("Getting registration")
         get_user_sql = "SELECT username, password, email FROM pending_registrations WHERE uuid=%s;"
         cursor.execute(get_user_sql, (uuid,))
         user = cursor.fetchone()
@@ -107,8 +86,5 @@ def verify(uuid, app):
     except Exception as e:
         app.logger.debug(e)
     finally:
-        if connection:
-            cursor.close()
-            connection.close()
-            app.logger.debug("DB connection closed")
+        close_postgres_connection(connection, cursor, app)
     return {'message': 'Internal server error'}, 500

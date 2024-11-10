@@ -1,4 +1,4 @@
-import psycopg2
+from scripts.helpers import open_postgres_connection, close_postgres_connection
 
 def upvote(postID, username, app):
     return vote(postID, username, 1, app)
@@ -8,15 +8,7 @@ def downvote(postID, username, app):
 
 def vote(postID, username, score, app):
     try:
-        connection = psycopg2.connect(
-            dbname   = app.config['POSTGRES_DB'],
-            user     = app.config['POSTGRES_USER'],
-            password = app.config['POSTGRES_PASS'],
-            host     = app.config['POSTGRES_HOST'],
-            port     = app.config['POSTGRES_PORT']
-        )
-        cursor = connection.cursor()
-        app.logger.debug("DB connection opened")
+        connection, cursor = open_postgres_connection(app)
         app.logger.debug(f"Score is {score}")
         
         get_vote_sql = "SELECT vote FROM votes WHERE username=%s AND post_id=%s"
@@ -44,7 +36,4 @@ def vote(postID, username, score, app):
         app.logger.debug(e)
         return {'message': 'Vote failed'}, 500
     finally:
-        if connection:
-            cursor.close()
-            connection.close()
-            app.logger.debug("DB connection closed")
+        close_postgres_connection(connection, cursor, app)

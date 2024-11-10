@@ -1,6 +1,5 @@
-import psycopg2
-from psycopg2.extensions import quote_ident
 from psycopg2 import sql
+from scripts.helpers import open_postgres_connection, close_postgres_connection
 
 def top(page, app):
     query = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, COALESCE(SUM(v.vote), 0) AS score,
@@ -94,15 +93,7 @@ def posts_by_tag(tag, page, app):
 
 def search(query, values, app):
     try:
-        connection = psycopg2.connect(
-            dbname   = app.config['POSTGRES_DB'],
-            user     = app.config['POSTGRES_USER'],
-            password = app.config['POSTGRES_PASS'],
-            host     = app.config['POSTGRES_HOST'],
-            port     = app.config['POSTGRES_PORT']
-        )
-        cursor = connection.cursor()
-        app.logger.debug("DB connection opened")
+        connection, cursor = open_postgres_connection(app)
 
         cursor.execute(query, values)
         memes = cursor.fetchall()
@@ -112,10 +103,7 @@ def search(query, values, app):
         app.logger.debug(e)
         return
     finally:
-        if connection:
-            cursor.close()
-            connection.close()
-            app.logger.debug("DB connection closed")
+        close_postgres_connection(connection, cursor, app)
 
 def to_json(list):
     all_tags = ('tag_all', 'tag_emk', 'tag_gpk', 'tag_epk', 'tag_vbk', 'tag_vik', 'tag_kjk', 'tag_ttk', 'tag_gtk')

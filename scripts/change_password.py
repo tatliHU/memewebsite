@@ -1,9 +1,8 @@
-import psycopg2
 from uuid import uuid4
 import bcrypt
 import time
 from marshmallow import Schema, fields, validate, ValidationError
-from scripts.helpers import match_password, send_email
+from scripts.helpers import match_password, send_email, open_postgres_connection, close_postgres_connection
 
 class UserSchema(Schema):
     password = fields.Str(required=True, validate=validate.Length(min=4, max=32), error_messages={'required': 'Password is required', 'invalid': 'Password is invalid'})
@@ -20,15 +19,7 @@ def change_password(username, currentPassword, newPassword, app):
     except ValidationError as err:
         return err.messages, 400
     try:
-        connection = psycopg2.connect(
-            dbname   = app.config['POSTGRES_DB'],
-            user     = app.config['POSTGRES_USER'],
-            password = app.config['POSTGRES_PASS'],
-            host     = app.config['POSTGRES_HOST'],
-            port     = app.config['POSTGRES_PORT']
-        )
-        cursor = connection.cursor()
-        app.logger.debug("DB connection opened")
+        connection, cursor = open_postgres_connection(app)
         
         app.logger.debug("Changing password")
         salt = bcrypt.gensalt()
@@ -42,23 +33,12 @@ def change_password(username, currentPassword, newPassword, app):
     except Exception as e:
         app.logger.debug(e)
     finally:
-        if connection:
-            cursor.close()
-            connection.close()
-            app.logger.debug("DB connection closed")
+        close_postgres_connection(connection, cursor, app)
     return {'message': 'Internal server error'}, 500
 
 def forgot_password(email, app):
     try:
-        connection = psycopg2.connect(
-            dbname   = app.config['POSTGRES_DB'],
-            user     = app.config['POSTGRES_USER'],
-            password = app.config['POSTGRES_PASS'],
-            host     = app.config['POSTGRES_HOST'],
-            port     = app.config['POSTGRES_PORT']
-        )
-        cursor = connection.cursor()
-        app.logger.debug("DB connection opened")
+        connection, cursor = open_postgres_connection(app)
         
         get_username_sql = "SELECT username FROM users WHERE email=%s;"
         cursor.execute(get_username_sql, (email,))
@@ -86,23 +66,12 @@ def forgot_password(email, app):
     except Exception as e:
         app.logger.debug(e)
     finally:
-        if connection:
-            cursor.close()
-            connection.close()
-            app.logger.debug("DB connection closed")
+        close_postgres_connection(connection, cursor, app)
     return {'message': 'Internal server error'}, 500
 
 def reset_password(uuid, app):
     try:
-        connection = psycopg2.connect(
-            dbname   = app.config['POSTGRES_DB'],
-            user     = app.config['POSTGRES_USER'],
-            password = app.config['POSTGRES_PASS'],
-            host     = app.config['POSTGRES_HOST'],
-            port     = app.config['POSTGRES_PORT']
-        )
-        cursor = connection.cursor()
-        app.logger.debug("DB connection opened")
+        connection, cursor = open_postgres_connection(app)
         
         get_username_sql = "SELECT username FROM pending_passwords WHERE uuid=%s;"
         cursor.execute(get_username_sql, (uuid,))
@@ -124,8 +93,5 @@ def reset_password(uuid, app):
     except Exception as e:
         app.logger.debug(e)
     finally:
-        if connection:
-            cursor.close()
-            connection.close()
-            app.logger.debug("DB connection closed")
+        close_postgres_connection(connection, cursor, app)
     return {'message': 'Internal server error'}, 500

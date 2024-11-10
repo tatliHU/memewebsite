@@ -3,18 +3,28 @@ import bcrypt
 import boto3
 from botocore.exceptions import ClientError
 
-def match_password(username, password, app):
-    try:
-        connection = psycopg2.connect(
+def open_postgres_connection(app):
+    connection = psycopg2.connect(
             dbname   = app.config['POSTGRES_DB'],
             user     = app.config['POSTGRES_USER'],
             password = app.config['POSTGRES_PASS'],
             host     = app.config['POSTGRES_HOST'],
             port     = app.config['POSTGRES_PORT']
         )
-        cursor = connection.cursor()
-        app.logger.debug("DB connection opened")
+    cursor = connection.cursor()
+    app.logger.debug("DB connection opened")
+    return connection, cursor
 
+def close_postgres_connection(connection, cursor, app):
+    if connection:
+        cursor.close()
+        connection.close()
+        app.logger.debug("DB connection closed")
+
+def match_password(username, password, app):
+    try:
+        connection, cursor = open_postgres_connection(app)
+        
         app.logger.debug("Retrieving password")
         get_user_sql = "SELECT password FROM users WHERE username=%s;"
         cursor.execute(get_user_sql, (username,))
@@ -27,10 +37,7 @@ def match_password(username, password, app):
         app.logger.debug(e)
         return False
     finally:
-        if connection:
-            cursor.close()
-            connection.close()
-            app.logger.debug("DB connection closed")
+        close_postgres_connection(connection, cursor, app)
 
 def send_email(email, file, title, urn, app):
     with open(file, 'r') as html_file:

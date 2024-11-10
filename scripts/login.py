@@ -1,7 +1,6 @@
 import base64
-import psycopg2
 import flask
-from scripts.helpers import match_password
+from scripts.helpers import match_password, open_postgres_connection, close_postgres_connection
 
 def login(authorization, app):
     try:
@@ -13,15 +12,7 @@ def login(authorization, app):
         return {'message': 'Unauthorized'}, 401
     
     try:
-        connection = psycopg2.connect(
-            dbname   = app.config['POSTGRES_DB'],
-            user     = app.config['POSTGRES_USER'],
-            password = app.config['POSTGRES_PASS'],
-            host     = app.config['POSTGRES_HOST'],
-            port     = app.config['POSTGRES_PORT']
-        )
-        cursor = connection.cursor()
-        app.logger.debug("DB connection opened")
+        connection, cursor = open_postgres_connection(app)
         
         app.logger.debug("Authorizing")
         if match_password(username, password, app):
@@ -32,8 +23,5 @@ def login(authorization, app):
     except Exception as e:
         app.logger.debug(e)
     finally:
-        if connection:
-            cursor.close()
-            connection.close()
-            app.logger.debug("DB connection closed")
+        close_postgres_connection(connection, cursor, app)
     return {'message': 'Internal server error'}, 500

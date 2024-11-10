@@ -1,4 +1,4 @@
-import psycopg2
+from scripts.helpers import open_postgres_connection, close_postgres_connection
 
 def deny(postID, approver, app):
     return approve(postID, approver, False, app)
@@ -8,15 +8,7 @@ def accept(postID, approver, app):
 
 def approve(postID, approver, approved, app):
     try:
-        connection = psycopg2.connect(
-            dbname   = app.config['POSTGRES_DB'],
-            user     = app.config['POSTGRES_USER'],
-            password = app.config['POSTGRES_PASS'],
-            host     = app.config['POSTGRES_HOST'],
-            port     = app.config['POSTGRES_PORT']
-        )
-        cursor = connection.cursor()
-        app.logger.debug("DB connection opened")
+        connection, cursor = open_postgres_connection(app)
 
         app.logger.debug("Authorizing")
         get_admin_sql = "SELECT admin FROM users WHERE username=%s;"
@@ -43,7 +35,4 @@ def approve(postID, approver, approved, app):
         app.logger.debug(e)
         return {'message': 'Approval failed'}, 500
     finally:
-        if connection:
-            cursor.close()
-            connection.close()
-            app.logger.debug("DB connection closed")
+        close_postgres_connection(connection, cursor, app)

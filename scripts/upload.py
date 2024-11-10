@@ -1,8 +1,8 @@
-import psycopg2
 import boto3
 from werkzeug.utils import secure_filename
 import uuid
 import time
+from scripts.helpers import open_postgres_connection, close_postgres_connection
 
 def upload(image, title, tags, username, app):
     if 50<len(title):
@@ -23,15 +23,7 @@ def upload(image, title, tags, username, app):
         
     # DB upload
     try:
-        connection = psycopg2.connect(
-            dbname   = app.config['POSTGRES_DB'],
-            user     = app.config['POSTGRES_USER'],
-            password = app.config['POSTGRES_PASS'],
-            host     = app.config['POSTGRES_HOST'],
-            port     = app.config['POSTGRES_PORT']
-        )
-        cursor = connection.cursor()
-        app.logger.debug("DB connection opened")
+        connection, cursor = open_postgres_connection(app)
         
         app.logger.debug("Uploading metadata to DB")
         create_user_sql = '''
@@ -58,10 +50,7 @@ def upload(image, title, tags, username, app):
         app.logger.debug(e)
         return {'message': 'File upload failed'}, 500
     finally:
-        if connection:
-            cursor.close()
-            connection.close()
-            app.logger.debug("DB connection closed")
+        close_postgres_connection(connection, cursor, app)
     
     # S3 upload
     try:
