@@ -10,41 +10,80 @@ async function loadImages(func, page, query = "", voteEndpoint = "vote") {
 
 function displayImages(images, voteEndpoint) {
     const gallery = document.getElementById('gallery');
-    gallery.innerHTML = '';
-
-    images.forEach(image => {
-        let hrefs = '';
-        image.tags.forEach(tag => {
-            displayed_tag=tag.replace(/^tag_/, '').toUpperCase();
-            const href = `<a href="/tag?name=${tag}">${displayed_tag}</a>`;
-            hrefs += href + '\n';
-        });
-        
+    images.forEach(image => {        
         const imageCard = document.createElement('div');
-        imageCard.className = 'image-card';
+        imageCard.classList.add('image-card');
 
-        imageCard.innerHTML = `
-            <div class="image-top">
-                <div class="image-top-left"></div>
-                <div class="image-top-middle">
-                    <a>${image.title}</a>
-                </div>
-                <div class="image-top-right">
-                    <span>${hrefs}</span>
-                </div>
-            </div>
-            <img src="${image.url}" alt="Unable to load image">
-            <div class="voting-oval">
-                <div class="voting-controls">
-                    <button class="vote-button" onclick="vote(${image.postid}, 1, '${voteEndpoint}')">+</button>
-                    <div class="score" id="score-${image.postid}">${image.score}</div>
-                    <button class="vote-button" onclick="vote(${image.postid}, -1, '${voteEndpoint}')">-</button>
-                </div>
-                <div class="postername">
-                    <a href="/user?name=${image.username}">${image.username}</a>
-                </div>
-            </div>
-        `;
+        const imageTop = document.createElement('div');
+        imageTop.classList.add('image-top');
+
+        const imageTopLeft = document.createElement('div');
+        imageTopLeft.classList.add('image-top-left');
+
+        const imageTopMiddle = document.createElement('div');
+        imageTopMiddle.classList.add('image-top-middle');
+        const titleAnchor = document.createElement('a');
+        titleAnchor.textContent = image.title;
+        imageTopMiddle.appendChild(titleAnchor);
+
+        const imageTopRight = document.createElement('div');
+        imageTopRight.classList.add('image-top-right');
+        const hrefSpan = document.createElement('span');
+        image.tags.forEach(tag => {
+            displayedTag=tag.replace(/^tag_/, '').toUpperCase();
+            const anchorElement = document.createElement('a');
+            anchorElement.href = `/tag?name=${encodeURIComponent(tag)}`;
+            anchorElement.textContent = displayedTag;
+            anchorElement.style.marginRight = '8px';
+            hrefSpan.appendChild(anchorElement);
+        });
+        imageTopRight.appendChild(hrefSpan);
+
+        imageTop.appendChild(imageTopLeft);
+        imageTop.appendChild(imageTopMiddle);
+        imageTop.appendChild(imageTopRight);
+        imageCard.appendChild(imageTop);
+
+        const imgElement = document.createElement('img');
+        imgElement.src = image.url;
+        imgElement.alt = 'Unable to load image';
+        imageCard.appendChild(imgElement);
+
+        const votingOval = document.createElement('div');
+        votingOval.classList.add('voting-oval');
+
+        const votingControls = document.createElement('div');
+        votingControls.classList.add('voting-controls');
+
+        const upvoteButton = document.createElement('button');
+        upvoteButton.classList.add('vote-button');
+        upvoteButton.textContent = '+';
+        upvoteButton.onclick = () => vote(image.postid, 1, voteEndpoint);
+
+        const scoreDiv = document.createElement('div');
+        scoreDiv.classList.add('score');
+        scoreDiv.id = `score-${image.postid}`;
+        scoreDiv.textContent = image.score;
+
+        const downvoteButton = document.createElement('button');
+        downvoteButton.classList.add('vote-button');
+        downvoteButton.textContent = '-';
+        downvoteButton.onclick = () => vote(image.postid, -1, voteEndpoint);
+
+        votingControls.appendChild(upvoteButton);
+        votingControls.appendChild(scoreDiv);
+        votingControls.appendChild(downvoteButton);
+        votingOval.appendChild(votingControls);
+
+        const posterNameDiv = document.createElement('div');
+        posterNameDiv.classList.add('postername');
+        const userLink = document.createElement('a');
+        userLink.href = `/user?name=${encodeURIComponent(image.username)}`;
+        userLink.textContent = image.username;
+
+        posterNameDiv.appendChild(userLink);
+        votingOval.appendChild(posterNameDiv);
+        imageCard.appendChild(votingOval);
 
         gallery.appendChild(imageCard);
     });
@@ -159,25 +198,43 @@ function submitRegister() {
 
 function loadPageSelector(func, page) {
     const pageSelector = document.getElementById('pageSelector');
-    pageSelector.innerHTML = '';
 
     let pageNumber = parseInt(page);
     let start = (pageNumber <= 4) ? 1 : pageNumber - 3;
     let end = (pageNumber <= 4) ? 7 : pageNumber + 3;
     for (let i = start; i <= end; i++) {
-        pageHTML = `
-            <form action="/${func}">
-                <input type="submit" value="${i}" class="pagerButton" />
-                <input type="hidden" name="page" value="${i}" />
-            </form>
-        `;
-        currentPageHTML = `
-            <form action="javascript:void(0);">
-                <input type="submit" value="${i}" class="pagerButtonCurrent" />
-            </form>
-        `;
         const pageButton = document.createElement('div');
-        pageButton.innerHTML = i==page ? currentPageHTML : pageHTML;
+        if (i == page) {
+            // Create form for the current page
+            const currentForm = document.createElement('form');
+            currentForm.setAttribute('action', 'javascript:void(0);');
+        
+            const currentInput = document.createElement('input');
+            currentInput.setAttribute('type', 'submit');
+            currentInput.setAttribute('value', i);
+            currentInput.classList.add('pagerButtonCurrent');
+        
+            currentForm.appendChild(currentInput);
+            pageButton.appendChild(currentForm);
+        } else {
+            // Create form for other pages
+            const form = document.createElement('form');
+            form.setAttribute('action', `/${encodeURIComponent(func)}`);
+        
+            const submitInput = document.createElement('input');
+            submitInput.setAttribute('type', 'submit');
+            submitInput.setAttribute('value', i);
+            submitInput.classList.add('pagerButton');
+        
+            const hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'page');
+            hiddenInput.setAttribute('value', i);
+        
+            form.appendChild(submitInput);
+            form.appendChild(hiddenInput);
+            pageButton.appendChild(form);
+        }
         pageSelector.appendChild(pageButton);
     }
 }
