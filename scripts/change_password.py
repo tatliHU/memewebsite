@@ -57,7 +57,7 @@ def forgot_password(email, app):
                 email,
                 'files/forgot_password_email.html',
                 'Password reset',
-                f"/api/forgot-password/{uuid}",
+                f"/forgot-password/{uuid}",
                 app)
             if success:
                 return {'message': 'Email sent'}, 200

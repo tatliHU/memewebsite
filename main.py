@@ -128,7 +128,23 @@ def admin_endpoint():
         voteEndpoint="approve",
         username=session['username'] if 'username' in session else ''
     )
-    
+
+@app.route("/verify/<uuid>", methods=['GET'])
+def verify_endpoint(uuid):
+    return render_template(
+        'message.html',
+        message=verify(uuid, app)[0]['message'],
+        username=session['username'] if 'username' in session else ''
+    )
+
+@app.route("/forgot-password/<uuid>", methods=['GET'])
+def reset_password_endpoint(uuid):
+    return render_template(
+        'message.html',
+        message=reset_password(uuid, app)[0]['message'],
+        username=session['username'] if 'username' in session else ''
+    )
+
 # static files
 @app.route("/favicon.ico", methods=['GET'])
 def favicon_endpoint():
