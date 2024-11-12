@@ -5,10 +5,6 @@ Multi-cloud meme website designed to opearate on ultra-low infra budget.
 - AWS account with an S3 bucket
 - Your own domain
 
-### Planned features
-- Domain
-- Automatic certificate creation and renewal with Let's encrypt
-
 ## Backend stack:
 - Python
 - Flask
