@@ -24,6 +24,7 @@ function displayImages(images, voteEndpoint) {
         imageTopMiddle.classList.add('image-top-middle');
         const titleAnchor = document.createElement('a');
         titleAnchor.textContent = image.title;
+        titleAnchor.href = `/post?id=${image.postid}`;
         imageTopMiddle.appendChild(titleAnchor);
 
         const imageTopRight = document.createElement('div');

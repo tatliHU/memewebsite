@@ -91,6 +91,15 @@ def posts_by_tag(tag, page, app):
     query = sql.SQL(query).format(tag_column=sql.Identifier(tag))
     return to_json(search(query, (page,), app))
 
+def posts_by_id(id, app):
+    query = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, COALESCE(SUM(v.vote), 0) AS score,
+            p.tag_all, p.tag_emk, p.tag_gpk, p.tag_epk, p.tag_vbk, p.tag_vik, p.tag_kjk, p.tag_ttk, p.tag_gtk
+            FROM posts p
+            LEFT JOIN votes v ON p.post_id = v.post_id
+            WHERE p.post_id=%s AND approved IS true
+            GROUP BY p.post_id;"""
+    return to_json(search(query, (id,), app))
+
 def search(query, values, app):
     try:
         connection, cursor = open_postgres_connection(app)
