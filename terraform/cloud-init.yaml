@@ -138,8 +138,11 @@ write_files:
       mkdir -p /tmp/restore
       select ITEM in $(aws s3 ls s3://${aws_backup_bucket} | awk '{print $4}')
       do
+        psql -c "DROP DATABASE meme;"
+        psql -c "CREATE DATABASE meme WITH OWNER ${username};"
         aws s3 cp s3://${aws_backup_bucket}/$ITEM /tmp/restore
-        pg_restore meme --format=tar --file=/tmp/restore/$ITEM
+        tar -xvf /tmp/restore/$ITEM -C /tmp/restore
+        pg_restore --dbname=meme --format=directory /tmp/restore
         break
       done
       rm -R /tmp/restore
@@ -185,11 +188,6 @@ runcmd:
   - cat /etc/letsencrypt/live/${domain}/fullchain.pem /etc/letsencrypt/live/${domain}/privkey.pem > /etc/ssl/certs/haproxy.pem
   - chmod 600 /etc/ssl/certs/haproxy.pem
 
-  - apt -y install haproxy
-  - cat /tmp/haproxy.txt >> /etc/haproxy/haproxy.cfg
-  - systemctl enable haproxy
-  - systemctl start haproxy
-
   - apt-get -y install pip python3-flask python3-flask-limiter python3-psycopg2 python3-boto3 python3-gunicorn gunicorn python3-marshmallow python3-bcrypt
   - cd /var && git clone https://github.com/tatliHU/memewebsite.git
   - systemctl daemon-reload
@@ -197,6 +195,12 @@ runcmd:
   - systemctl start backup.timer
   - systemctl enable meme
   - systemctl start meme
+
+  - apt -y install haproxy
+  - cat /tmp/haproxy.txt >> /etc/haproxy/haproxy.cfg
+  - systemctl enable haproxy
+  - systemctl start haproxy
+  - systemctl restart haproxy
 
 package_update: true
 package_upgrade: true
