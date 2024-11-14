@@ -54,8 +54,8 @@ def forgot_password(email, app):
             cursor.execute(forgot_password_sql, (email, username, email, uuid, int(round(time.time())),))
             connection.commit()
             success = send_email(
-                email,
-                'files/forgot_password_email.html',
+                [email],
+                'email_templates/forgot_password_email.html',
                 'Password reset',
                 f"/forgot-password/{uuid}",
                 app)

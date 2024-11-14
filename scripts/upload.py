@@ -2,7 +2,7 @@ import boto3
 from werkzeug.utils import secure_filename
 import uuid
 import time
-from scripts.helpers import open_postgres_connection, close_postgres_connection
+from scripts.helpers import send_email, open_postgres_connection, close_postgres_connection
 
 def upload(image, title, tags, username, app):
     if 50<len(title):
@@ -58,8 +58,27 @@ def upload(image, title, tags, username, app):
         s3_client = boto3.client('s3')
         s3_client.upload_fileobj(image, app.config['S3_BUCKET'], f"{id}.{file_format}",
                                  ExtraArgs={'ContentType': image.content_type, 'ACL': 'public-read'})
-        return {'message': 'File uploaded. Please give some time for administrator approval.'}, 201
     except Exception as e:
         app.logger.debug(f"S3 upload failed for {id}")
         app.logger.debug(e)
         return {'message': 'File upload failed'}, 500
+    
+    # notify admins
+    if app.config['NOTIFY_ADMINS']:
+        emails = get_admins(app)
+        send_email(emails, 'email_templates/notify_admin_email.html', 'A post is waiting for your approval', "/admin", app)
+    return {'message': 'File uploaded. Please give some time for administrator approval.'}, 201
+
+def get_admins(app):
+    try:
+        connection, cursor = open_postgres_connection(app)
+        cursor.execute("SELECT email FROM users WHERE admin is true")
+        connection.commit()
+        admins = cursor.fetchone()
+        app.logger.debug(admins)
+        return admins
+    except Exception as e:
+        app.logger.debug(f"Failed to get admin users")
+        app.logger.debug(e)
+    finally:
+        close_postgres_connection(connection, cursor, app)

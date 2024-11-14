@@ -17,6 +17,7 @@ data "template_file" "cloud_init" {
     contact_email         = var.contact_email
     domain                = var.domain
     debug                 = var.debug ? "True" : "False"
+    notify_admins         = var.notify_admins ? "True" : "False"
   }
 }
 

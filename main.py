@@ -27,6 +27,7 @@ app.config['POSTGRES_PASS'] = os.getenv('POSTGRES_PASS', 'atka')
 app.config['DOMAIN']        = os.getenv('DOMAIN', 'bme.lol')
 app.config['WEBSITE_URL']   = os.getenv('WEBSITE_URL', 'http://localhost:5000')
 app.config['DEBUG']         = os.getenv('DEBUG', False)
+app.config['NOTIFY_ADMINS'] = os.getenv('NOTIFY_ADMINS', False)
 
 @app.route("/")
 def index():

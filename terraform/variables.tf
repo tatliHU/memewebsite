@@ -77,3 +77,8 @@ variable "debug" {
     type    = bool
     default = false
 }
+
+variable "notify_admins" {
+    type    = bool
+    default = false
+}

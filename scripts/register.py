@@ -52,7 +52,7 @@ def register(json, app):
         connection.commit()
         
         app.logger.debug("Sending email for verification")
-        if send_email(email, 'files/verify_email.html', 'Email verification', f"/verify/{str(uuid)}", app):
+        if send_email([email], 'email_templates/verify_email.html', 'Email verification', f"/verify/{str(uuid)}", app):
             return {'message': 'Please check your email to verify your user'}, 201
         else:
             return {'message': 'An error occured while sending verification email'}, 500

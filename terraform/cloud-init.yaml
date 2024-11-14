@@ -32,6 +32,7 @@ write_files:
       Environment="AWS_ACCESS_KEY_ID=${aws_access_key_id}"
       Environment="AWS_SECRET_ACCESS_KEY=${aws_secret_access_key}"
       Environment="DEBUG=${debug}"
+      Environment="NOTIFY_ADMINS=${notify_admins}"
   - path: /tmp/db_init.sql
     content: | 
       CREATE USER ${username} WITH PASSWORD '${password}';

@@ -52,7 +52,7 @@ def match_password(username, password, app):
     finally:
         close_postgres_connection(connection, cursor, app)
 
-def send_email(email, file, title, urn, app):
+def send_email(to, file, title, urn, app):
     with open(file, 'r') as html_file:
         body_html = html_file.read()
     body_html = body_html.replace('[LINK]', f"{app.config['WEBSITE_URL']}{urn}")
@@ -61,7 +61,7 @@ def send_email(email, file, title, urn, app):
     try:
         response = ses_client.send_email(
             Destination={
-                'ToAddresses': [email,],
+                'ToAddresses': to,
             },
             Message={
                 'Body': {
