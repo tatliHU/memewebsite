@@ -74,9 +74,8 @@ def get_admins(app):
         connection, cursor = open_postgres_connection(app)
         cursor.execute("SELECT email FROM users WHERE admin is true")
         connection.commit()
-        admins = cursor.fetchone()
-        app.logger.debug(admins)
-        return admins
+        admins = cursor.fetchall()
+        return [admin[0] for admin in admins]
     except Exception as e:
         app.logger.debug(f"Failed to get admin users")
         app.logger.debug(e)
