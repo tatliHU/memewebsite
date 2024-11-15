@@ -4,8 +4,12 @@ import time
 from marshmallow import Schema, fields, validate, ValidationError
 from scripts.helpers import send_email, open_postgres_connection, close_postgres_connection
 
+def no_plus(email):
+    if '+' in email:
+        raise ValidationError("Email addresses with '+' are not allowed.")
+
 class UserSchema(Schema):
-    email = fields.Email(required=True, validate=validate.Length(min=4, max=40), error_messages={'required': 'Email is required', 'invalid': 'Email is invalid'})
+    email = fields.Email(required=True, validate=[validate.Length(min=4, max=40), no_plus], error_messages={'required': 'Email is required', 'invalid': 'Email is invalid'})
     password = fields.Str(required=True, validate=validate.Length(min=4, max=32), error_messages={'required': 'Password is required', 'invalid': 'Password is invalid'})
     username = fields.Str(required=True, validate=validate.Length(min=3, max=25), error_messages={'required': 'Username is required', 'invalid': 'Username is invalid'})
 
