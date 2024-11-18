@@ -1,0 +1,9 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: meme
+      POSTGRES_USER: atka
+      POSTGRES_PASSWORD: atka
+    ports:
+      - "5432:5432"
