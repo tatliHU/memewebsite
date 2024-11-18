@@ -18,7 +18,7 @@ def upload(image, title, tags, username, app):
     id = uuid.uuid4()
     app.logger.debug(f"Generated Id: {id}")
     file_format = secure_filename(image.filename).split(".")[-1]
-    if file_format not in ["jpg", "png", "gif"]:
+    if file_format not in ["jpg", "jpeg", "png", "gif", "webp"]:
         return {'message': 'Invalid file format'}, 406
         
     # DB upload
