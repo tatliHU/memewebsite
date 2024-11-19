@@ -4,10 +4,19 @@ import time
 from marshmallow import Schema, fields, validate, ValidationError
 from scripts.helpers import send_email, open_postgres_connection, close_postgres_connection
 
+def has_no_special_characters(text):
+    try:
+        text.encode('utf-8').decode('utf-8')
+    except UnicodeDecodeError:
+        raise ValidationError("Only English alphanumeric characters are allowed.")
+    if not text.isalnum() or not text.isascii():
+        raise ValidationError("Only English alphanumeric characters are allowed.")
+
 class UserSchema(Schema):
     email = fields.Email(required=True, validate=validate.Length(min=4, max=40), error_messages={'required': 'Email is required', 'invalid': 'Email is invalid'})
     password = fields.Str(required=True, validate=validate.Length(min=4, max=32), error_messages={'required': 'Password is required', 'invalid': 'Password is invalid'})
-    username = fields.Str(required=True, validate=validate.Length(min=3, max=25), error_messages={'required': 'Username is required', 'invalid': 'Username is invalid'})
+    username = fields.Str(required=True, validate=[validate.Length(min=3, max=25), has_no_special_characters],
+                            error_messages={'required': 'Username is required', 'invalid': 'Username is invalid'})
 
 def register(json, app):
     try:
