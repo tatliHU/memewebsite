@@ -1,0 +1,20 @@
+[project]
+name = "memewebsite"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "bcrypt>=4.2.0",
+    "boto3>=1.35.63",
+    "flask-limiter>=3.8.0",
+    "flask>=3.1.0",
+    "marshmallow>=3.23.1",
+    "psycopg2-binary>=2.9.10",
+]
+
+[dependency-groups]
+dev = [
+    "gunicorn>=23.0.0",
+    "ruff>=0.7.4",
+]
