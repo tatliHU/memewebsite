@@ -240,8 +240,7 @@ def trash_api_endpoint():
 
 @app.route("/api/random", methods=['GET'])
 def random_api_endpoint():
-    return random(request.args.get('page', ''),
-                  username=session['username'] if 'username' in session else '', app=app)
+    return random(username=session['username'] if 'username' in session else '', app=app)
 
 @app.route("/api/search", methods=['GET'])
 def search_api_endpoint():

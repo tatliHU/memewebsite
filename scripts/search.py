@@ -41,7 +41,7 @@ def trash(page, username, app):
             LIMIT 10 OFFSET (%s - 1) * 10;"""
     return to_json(search(query, (username, page,), app))
 
-def random(page, username, app):
+def random(username, app):
     query = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver,
             COALESCE(SUM(v.vote), 0) AS score,
             COALESCE(MAX(CASE WHEN v.username = %s THEN v.vote END), 0) AS vote,
@@ -51,7 +51,7 @@ def random(page, username, app):
             WHERE approved IS true
             GROUP BY p.post_id
             ORDER BY random();"""
-    return to_json(search(query, (username, page,), app))
+    return to_json(search(query, (username,), app))
 
 def approve(page, app):
     query = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, 0 AS score,
