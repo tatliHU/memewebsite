@@ -59,6 +59,7 @@ function displayImages(images, voteEndpoint) {
         const upvoteButton = document.createElement('button');
         upvoteButton.classList.add('vote-button');
         upvoteButton.textContent = '+';
+        upvoteButton.id = `upvote-${image.postid}`;
         upvoteButton.onclick = () => vote(image.postid, 1, voteEndpoint);
 
         const scoreDiv = document.createElement('div');
@@ -69,6 +70,7 @@ function displayImages(images, voteEndpoint) {
         const downvoteButton = document.createElement('button');
         downvoteButton.classList.add('vote-button');
         downvoteButton.textContent = '-';
+        downvoteButton.id = `downvote-${image.postid}`;
         downvoteButton.onclick = () => vote(image.postid, -1, voteEndpoint);
         if (image.vote === 1) {
             upvoteButton.classList.add('upvote-active');
@@ -107,6 +109,16 @@ function vote(postID, delta, voteEndpoint) {
         if (response.ok) {
             scoreText = document.getElementById(`score-${postID}`)
             scoreText.textContent = parseInt(scoreText.textContent) + delta;
+            upvoteButton = document.getElementById(`upvote-${postID}`)
+            downvoteButton = document.getElementById(`downvote-${postID}`)
+            if (delta === 1) {
+                upvoteButton.classList.toggle('upvote-active');
+                downvoteButton.classList.remove('downvote-active');
+            }
+            else {
+                upvoteButton.classList.remove('upvote-active');
+                downvoteButton.classList.toggle('downvote-active');
+            }
             return;
         }
         return Promise.reject(response);
