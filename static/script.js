@@ -70,6 +70,11 @@ function displayImages(images, voteEndpoint) {
         downvoteButton.classList.add('vote-button');
         downvoteButton.textContent = '-';
         downvoteButton.onclick = () => vote(image.postid, -1, voteEndpoint);
+        if (image.vote === 1) {
+            upvoteButton.classList.add('upvote-active');
+        } else if (image.vote === -1) {
+            downvoteButton.classList.add('downvote-active');
+        }
 
         votingControls.appendChild(upvoteButton);
         votingControls.appendChild(scoreDiv);

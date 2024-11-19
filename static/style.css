@@ -106,6 +106,14 @@ body {
 .vote-button:hover {
     background-color: #28a745;
 }
+.upvote-active {
+    background-color: #28a745;
+    color: white;
+  }
+.downvote-active {
+    background-color: #b02525;
+    color: white;
+}
 .score {
     font-size: 1.5em;
     font-weight: bold;

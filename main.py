@@ -225,35 +225,43 @@ def verify_api_endpoint(uuid):
 
 @app.route("/api/fresh", methods=['GET'])
 def fresh_api_endpoint():
-    return fresh(request.args.get('page', ''), app=app)
+    return fresh(request.args.get('page', ''),
+                 username=session['username'] if 'username' in session else '', app=app)
 
 @app.route("/api/top", methods=['GET'])
 def top_api_endpoint():
-    return top(request.args.get('page', ''), app=app)
+    return top(request.args.get('page', ''),
+               username=session['username'] if 'username' in session else '', app=app)
 
 @app.route("/api/trash", methods=['GET'])
 def trash_api_endpoint():
-    return trash(request.args.get('page', ''), app=app)
+    return trash(request.args.get('page', ''),
+                 username=session['username'] if 'username' in session else '', app=app)
 
 @app.route("/api/random", methods=['GET'])
 def random_api_endpoint():
-    return random(request.args.get('page', ''), app=app)
+    return random(request.args.get('page', ''),
+                  username=session['username'] if 'username' in session else '', app=app)
 
 @app.route("/api/search", methods=['GET'])
 def search_api_endpoint():
-    return posts_by_title(request.args.get('title'), request.args.get('page', ''), app=app)
+    return posts_by_title(request.args.get('title'), request.args.get('page', ''),
+                          username=session['username'] if 'username' in session else '', app=app)
 
 @app.route("/api/user", methods=['GET'])
 def user_api_endpoint():
-    return posts_by_user(request.args.get('name', ''), request.args.get('page', ''), app=app)
+    return posts_by_user(request.args.get('name', ''), request.args.get('page', ''),
+                         username=session['username'] if 'username' in session else '', app=app)
 
 @app.route("/api/tag", methods=['GET'])
 def tag_api_endpoint():
-    return posts_by_tag(request.args.get('name', ''), request.args.get('page', ''), app=app)
+    return posts_by_tag(request.args.get('name', ''), request.args.get('page', ''),
+                        username=session['username'] if 'username' in session else '', app=app)
 
 @app.route("/api/post", methods=['GET'])
 def post_api_endpoint():
-    return posts_by_id(request.args.get('id', ''), app=app)
+    return posts_by_id(request.args.get('id', ''),
+                       username=session['username'] if 'username' in session else '', app=app)
 
 @app.route("/api/upload", methods=['POST'])
 @limiter.limit("3 per minute")
