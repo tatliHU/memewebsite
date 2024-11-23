@@ -108,14 +108,33 @@ function vote(postID, delta, voteEndpoint) {
     .then(response => {
         if (response.ok) {
             scoreText = document.getElementById(`score-${postID}`)
-            scoreText.textContent = parseInt(scoreText.textContent) + delta;
             upvoteButton = document.getElementById(`upvote-${postID}`)
             downvoteButton = document.getElementById(`downvote-${postID}`)
+            state_upvote = upvoteButton.classList.contains('upvote-active')
+            state_downvote = downvoteButton.classList.contains('downvote-active')
             if (delta === 1) {
+                if (state_upvote) {
+                    scoreText.textContent = parseInt(scoreText.textContent) - 1;
+                }
+                else if (state_downvote) {
+                    scoreText.textContent = parseInt(scoreText.textContent) + 2;
+                }
+                else {
+                    scoreText.textContent = parseInt(scoreText.textContent) + 1;
+                }
                 upvoteButton.classList.toggle('upvote-active');
                 downvoteButton.classList.remove('downvote-active');
             }
-            else {
+            if (delta == -1) {
+                if (state_downvote) {
+                    scoreText.textContent = parseInt(scoreText.textContent) + 1;
+                }
+                else if (state_upvote) {
+                    scoreText.textContent = parseInt(scoreText.textContent) - 2;
+                }
+                else {
+                    scoreText.textContent = parseInt(scoreText.textContent) - 1;
+                }
                 upvoteButton.classList.remove('upvote-active');
                 downvoteButton.classList.toggle('downvote-active');
             }
