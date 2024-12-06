@@ -54,7 +54,9 @@ def random(username, app):
     return to_json(search(query, (username,), app))
 
 def approve(page, app):
-    query = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver, 0 AS score,
+    query = """SELECT p.post_id, p.title, p.url, p.published, p.username, p.approver,
+            0 AS score,
+            0 AS vote,
             p.tag_all, p.tag_emk, p.tag_gpk, p.tag_epk, p.tag_vbk, p.tag_vik, p.tag_kjk, p.tag_ttk, p.tag_gtk
             FROM posts p
             WHERE approved IS NULL
