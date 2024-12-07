@@ -151,5 +151,5 @@ def to_json(list):
                 if i[8+k]:
                     tags.append(all_tags[k])
             obj['tags']      = tags
-            out.insert(0, obj)
+            out.append(obj)
     return out
