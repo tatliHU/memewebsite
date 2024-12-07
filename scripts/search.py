@@ -10,7 +10,7 @@ def top(page, username, app):
             LEFT JOIN votes v ON p.post_id = v.post_id
             WHERE approved IS true
             GROUP BY p.post_id
-            ORDER BY score
+            ORDER BY score DESC
             LIMIT 10 OFFSET (%s - 1) * 10;"""
     return to_json(search(query, (username, page,), app))
 
@@ -23,7 +23,7 @@ def fresh(page, username, app):
             LEFT JOIN votes v ON p.post_id = v.post_id
             WHERE approved IS true
             GROUP BY p.post_id
-            ORDER BY published
+            ORDER BY published DESC
             LIMIT 10 OFFSET (%s - 1) * 10;"""
     return to_json(search(query, (username, page,), app))
 
@@ -37,7 +37,7 @@ def trash(page, username, app):
             WHERE approved IS true
             GROUP BY p.post_id
             HAVING COALESCE(SUM(v.vote), 0) BETWEEN -30 AND -1
-            ORDER BY published
+            ORDER BY published DESC
             LIMIT 10 OFFSET (%s - 1) * 10;"""
     return to_json(search(query, (username, page,), app))
 
@@ -74,7 +74,7 @@ def posts_by_user(user, page, username, app):
             LEFT JOIN votes v ON p.post_id = v.post_id
             WHERE p.username=%s AND approved IS true
             GROUP BY p.post_id
-            ORDER BY published
+            ORDER BY published DESC
             LIMIT 10 OFFSET (%s - 1) * 10;"""
     return to_json(search(query, (username, user, page,), app))
 
@@ -89,7 +89,7 @@ def posts_by_title(title, page, username, app):
             LEFT JOIN votes v ON p.post_id = v.post_id
             WHERE p.title ILIKE %s
             GROUP BY p.post_id
-            ORDER BY published
+            ORDER BY published DESC
             LIMIT 10 OFFSET (%s - 1) * 10;"""
     return to_json(search(query, (username, '%'+title+'%', page,), app))
 
@@ -102,7 +102,7 @@ def posts_by_tag(tag, page, username, app):
             LEFT JOIN votes v ON p.post_id = v.post_id
             WHERE {tag_column} IS true AND approved IS true
             GROUP BY p.post_id
-            ORDER BY published
+            ORDER BY published DESC
             LIMIT 10 OFFSET (%s - 1) * 10;"""
     query = sql.SQL(query).format(tag_column=sql.Identifier(tag))
     return to_json(search(query, (username, page,), app))
