@@ -8,6 +8,16 @@ async function loadImages(func, page, query = "", voteEndpoint = "vote") {
     }
 }
 
+async function loadComments(query) {
+    try {
+        const response = await fetch(`/api/comment?${query}`);
+        const comments = await response.json();
+        displayComments(comments, query);
+    } catch (error) {
+        console.error('Error loading comments:', error);
+    }
+}
+
 function displayImages(images, voteEndpoint) {
     const gallery = document.getElementById('gallery');
     images.forEach(image => {        
@@ -95,6 +105,63 @@ function displayImages(images, voteEndpoint) {
 
         gallery.appendChild(imageCard);
     });
+}
+
+function displayComments(comments, query) {
+    const gallery = document.getElementById('gallery');
+    const comment_section = document.createElement('div');
+    
+    const comment_textbox = document.createElement('textarea');
+    comment_textbox.setAttribute('id', 'comment-textbox');
+    comment_textbox.setAttribute('placeholder', 'Write a comment...');
+    comment_textbox.addEventListener('keydown', function(event) {postComment(event, query)});
+    comment_section.appendChild(comment_textbox);
+
+    comments.forEach(comment => {        
+        const commentElement = document.createElement('div');
+        commentElement.classList.add('comment');
+        const commentUser = document.createElement('a');
+        commentUser.href = `/user?name=${comment.username}`;
+        commentUser.textContent = comment.username;
+        const commentText = document.createElement('p');
+        commentText.textContent = comment.text;
+        commentElement.appendChild(commentUser);
+        commentElement.appendChild(commentText);
+        comment_section.appendChild(commentElement);
+    });
+
+    gallery.appendChild(comment_section);
+}
+
+function postComment(event, query) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        textbox = document.getElementById('comment-textbox');
+        fetch(`/api/comment?${query}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 'text': textbox.value })
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.reload();
+            }
+            else {
+                response.json().then((json) => {
+                    console.log(json.message);
+                    alert(json.message);
+                })
+            }
+        })
+        .catch(response => {
+            response.json().then((json) => {
+                console.log(json.message);
+                alert(json.message);
+            }) 
+        });
+    }
 }
 
 function vote(postID, delta, voteEndpoint) {

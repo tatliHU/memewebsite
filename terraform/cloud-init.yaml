@@ -92,12 +92,22 @@ write_files:
           created INT NOT NULL,
           PRIMARY KEY (email)
       );
+      CREATE TABLE comments (
+          comment_id SERIAL,
+          post_id INT NOT NULL,
+          username VARCHAR(25) NOT NULL,
+          text VARCHAR(250) NOT NULL,
+          created INT NOT NULL,
+          PRIMARY KEY (comment_id)
+      );
       GRANT ALL PRIVILEGES ON TABLE users TO ${username};
       GRANT ALL PRIVILEGES ON TABLE posts TO ${username};
       GRANT ALL PRIVILEGES ON TABLE votes TO ${username};
       GRANT ALL PRIVILEGES ON TABLE pending_registrations TO ${username};
       GRANT ALL PRIVILEGES ON TABLE pending_passwords TO ${username};
+      GRANT ALL PRIVILEGES ON TABLE comments TO ${username};
       GRANT USAGE, SELECT, UPDATE ON SEQUENCE posts_post_id_seq TO ${username};
+      GRANT USAGE, SELECT, UPDATE ON SEQUENCE comments_comment_id_seq TO ${username};
   - path: /etc/backup-script.sh
     permissions: '0755'
     content: |

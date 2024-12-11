@@ -1,0 +1,8 @@
+{% extends 'index.html' %}
+
+{% block comments %}
+<script src="script.js"></script>
+<script>
+    loadComments('{{query}}');
+</script>
+{% endblock %}

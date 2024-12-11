@@ -21,6 +21,18 @@ body {
     width: 80%;
     box-sizing: border-box;
 }
+.comment {
+    display: block;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-align: left;
+}
+.comment a {
+    color: #b02525;
+}
 .image-card {
     display: block;
     background-color: white;
@@ -120,6 +132,13 @@ body {
     color: #333;
     text-align: center;
     flex-grow: 1;
+}
+textarea {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding-top: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 .postername a {
     font-size: 1em;

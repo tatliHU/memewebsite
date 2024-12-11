@@ -7,6 +7,7 @@ from scripts.change_password import change_password, forgot_password, reset_pass
 from scripts.search import fresh, top, trash, random, posts_by_user, posts_by_title, posts_by_tag, posts_by_id, approve
 from scripts.upload import upload
 from scripts.vote import upvote, downvote
+from scripts.comment import comment, get_comments
 from scripts.approve import accept, deny
 from scripts.helpers import is_admin
 import os
@@ -109,7 +110,7 @@ def tag_endpoint():
 @app.route("/post", methods=['GET'])
 def post_endpoint():
     return render_template(
-        'index.html',
+        'single_post.html',
         func="post",
         page=1,
         query="id="+request.args.get('id'),
@@ -270,6 +271,7 @@ def upload_api_endpoint():
     else:
         return {'message': 'Login required'}, 401
 
+@limiter.limit("1 per second")
 @app.route("/api/vote", methods=['POST'])
 def vote_api_endpoint():
     if 'username' in session:
@@ -281,6 +283,18 @@ def vote_api_endpoint():
             return {'message': 'Invalid vote'}, 400
     else:
         return {'message': 'Login required'}, 401
+
+@app.route("/api/comment", methods=['POST'])
+@limiter.limit("5 per minute")
+def comment_api_endpoint():
+    if 'username' in session:
+        return comment(request.args.get('id'), request.json['text'], session['username'], app=app)
+    else:
+        return {'message': 'Login required'}, 401
+
+@app.route("/api/comment", methods=['GET'])
+def get_comment_api_endpoint():
+    return get_comments(request.args.get('id'), app=app)
 
 @app.route("/api/admin", methods=['GET'])
 def admin_api_endpoint():

@@ -122,10 +122,21 @@ CREATE TABLE pending_passwords (
     PRIMARY KEY (email)
 );
 
+CREATE TABLE comments (
+    comment_id SERIAL,
+    post_id INT NOT NULL,
+    username VARCHAR(25) NOT NULL,
+    text VARCHAR(250) NOT NULL,
+    created INT NOT NULL,
+    PRIMARY KEY (comment_id)
+);
+
 GRANT ALL PRIVILEGES ON TABLE users TO atka;
 GRANT ALL PRIVILEGES ON TABLE posts TO atka;
 GRANT ALL PRIVILEGES ON TABLE votes TO atka;
 GRANT ALL PRIVILEGES ON TABLE pending_registrations TO atka;
 GRANT ALL PRIVILEGES ON TABLE pending_passwords TO atka;
+GRANT ALL PRIVILEGES ON TABLE comments TO atka;
 GRANT USAGE, SELECT, UPDATE ON SEQUENCE posts_post_id_seq TO atka;
+GRANT USAGE, SELECT, UPDATE ON SEQUENCE comments_comment_id_seq TO atka;
 ```
